@@ -32,5 +32,19 @@
             <version>[1.0.0,2.0.0)</version>
         </dependency> 
     </dependencies>
-   
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>net.phillm.irctots3chat.irctots3chat</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
