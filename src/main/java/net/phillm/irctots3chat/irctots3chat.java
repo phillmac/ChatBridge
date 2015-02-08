@@ -23,6 +23,7 @@ public class irctots3chat {
             //new ChatBotExample();
             //new TS3Bot();
             try {
+                System.out.println("Chatbridge initalising");
                                 //Configure what we want our bot to do
 //                Configuration configuration = new Configuration.Builder()
 //                                .setName("TS3") //Set the nick of the bot. CHANGE IN YOUR CODE
