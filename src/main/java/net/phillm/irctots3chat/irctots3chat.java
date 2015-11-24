@@ -23,25 +23,25 @@ public class irctots3chat {
             //new ChatBotExample();
             //new TS3Bot();
             try {
-                System.out.println("Chatbridge initalising");
+                System.out.println("Chatbridge initalizing");
                                 //Configure what we want our bot to do
-//                Configuration configuration = new Configuration.Builder()
-//                                .setName("TS3") //Set the nick of the bot. CHANGE IN YOUR CODE
-//                                .setServerHostname("64.182.125.140") //Join the freenode network
-//                                .addAutoJoinChannel("#mcserverchat-test", "mcircchat112") //Join the official #pircbotx channel
-//                                .addListener(new IRCListener()) //Add our listener that will be called on Events
-//                                .buildConfiguration();
-//
-//                //Create our bot with the configuration
-//                MultiBotManager<PircBotX> manager = new MultiBotManager();
-//                manager.addBot(configuration);
+                Configuration configuration = new Configuration.Builder()
+                        .setName("TS3") //Set the nick of the bot. CHANGE IN YOUR CODE
+                        .setServerHostname("irc.phillm.net") //Join the freenode network
+                        .addAutoJoinChannel("#mcserverchat-test", "mcircchat112") //Join the official #pircbotx channel
+                        .addListener(new IRCListener()) //Add our listener that will be called on Events
+                        .buildConfiguration();
+
+               //Create our bot with the configuration
+                MultiBotManager<PircBotX> manager = new MultiBotManager();
+                manager.addBot(configuration);
                 //PircBotX bot = new PircBotX(configuration);
                 //Connect to the server
                 //bot.startBot();
-//                manager.start();
-//                ircbotmanager = manager;
+                manager.start();
+                ircbotmanager = manager;
                 
-//               ts3 =  new TS3Bot();
+               ts3 =  new TS3Bot();
                 
                 
             } catch (Exception ex) {
@@ -63,3 +63,4 @@ public class irctots3chat {
 }
         
 }
+ 

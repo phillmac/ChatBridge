@@ -24,8 +24,12 @@ import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ServerQueryInfo;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import org.pircbotx.output.OutputChannel;
+import org.yaml.snakeyaml.Yaml;
+import java.io.*;
+import java.util.Map;
 
 /**
  *
@@ -33,22 +37,35 @@ import org.pircbotx.output.OutputChannel;
  */
 public class TS3Bot {
     private final TS3Api Api;
-    public TS3Bot(){
- 
+    private ArrayList<Integer> uidsInChannelBefore;
+    public TS3Bot() {
+
 		final TS3Config config = new TS3Config();
-		config.setHost("");
-		config.setDebugLevel(Level.ALL);
-		config.setLoginCredentials("", "");
+		//config.setDebugLevel(Level.ALL);
+                InputStream configInput = null;
+                try {
+                    configInput =  new FileInputStream(new File("ts3config.yml"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("Could not find ts3config.yml. Please check that it exists.");
+                }
+
+                Yaml configParser = new Yaml();
+                Map<String,String> configMap = (Map<String,String>)configParser.load(configInput);
+
+                config.setHost(configMap.get("host"));
+                config.setLoginCredentials(configMap.get("username"),configMap.get("password"));
 
 		final TS3Query query = new TS3Query(config);
 		query.connect();
 
 		final TS3Api api = query.getApi();
                 Api = api;
-                
+
 		api.selectVirtualServerById(1);
-		api.setNickname("IRC");
-                api.moveClient(api.getChannelByName("Wayne Manor").getId());
+		api.setNickname(configMap.get("nick"));
+
+                api.moveClient(api.whoAmI().getId(), api.getChannelByNameExact(configMap.get("channel"), true).getId());
 		api.sendChannelMessage(api.whoAmI().getNickname() +  " is active");
 
 		api.registerAllEvents();
@@ -56,18 +73,19 @@ public class TS3Bot {
 
                         @Override
 			public void onTextMessage(TextMessageEvent e) {
-				if (e.getTargetMode() == TextMessageTargetMode.CHANNEL ) {
-                                    String originalName; 
-                                    String nameTagStrip;                                                                                         
+                         System.out.println("onTextMessage fired");
+                         if (e.getTargetMode() == TextMessageTargetMode.CHANNEL ) {
+                                    String originalName;
+                                    String nameTagStrip;
                                     int beginStrip;
                                     int endStrip;
-                                    originalName = e.getInvokerName(); 										
-                                    beginStrip = originalName.indexOf("|")+1; 
+                                    originalName = e.getInvokerName();
+                                    beginStrip = originalName.indexOf("|")+1;
                                     if (beginStrip != -1) {
                                     } else {
                                         beginStrip = 0;
                                     }
-                                    endStrip = originalName.indexOf("[");      
+                                    endStrip = originalName.indexOf("[");
                                     if (endStrip != -1) {
                                     } else {
                                         endStrip = originalName.length();
@@ -82,14 +100,14 @@ public class TS3Bot {
                                             break;
                                         default:
                                             if (! api.whoAmI().getNickname().equals(e.getInvokerName()) ){
-                                                
+
                                                 OutputChannel ircchannel =  irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
-                                              
+
                                                 ircchannel.message(nameTagStrip + " : " + e.getMessage());
                                             }
                                             break;
                                     }
-				}
+                         }
 			}
 
                         @Override
@@ -99,114 +117,53 @@ public class TS3Bot {
 
                         @Override
 			public void onClientMoved(ClientMovedEvent e) {
-                            ClientInfo joiningClient;
-                            ServerQueryInfo localInfo;
-                            ChannelInfo channelInfo;
-                                    
-                            joiningClient = api.getClientInfo( e.getClientId());
-                            localInfo = api.whoAmI();
-                            channelInfo = api.getChannelInfo(localInfo.getChannelId());
-                            
-                           String originalName; 
-                           String nameTagStrip;                                                                                         
-                           
+                        System.out.println("onClientMoved fired");
+                            ClientInfo movingClient;
+                           // ServerQueryInfo localInfo;
+                            //ChannelInfo channelInfo;
+
+                            movingClient = api.getClientInfo( e.getClientId());
+                           // localInfo = api.whoAmI();
+                           // channelInfo = api.getChannelInfo(localInfo.getChannelId());
+
+                           String originalName;
+                           String nameTagStrip;
                            int beginStrip;
                            int endStrip;
-                           
-                           originalName = joiningClient.getNickname();
-                            
+
+                           originalName = movingClient.getNickname();
+
                             beginStrip = originalName.indexOf("|")+1;
                             if (beginStrip == -1)
                                 beginStrip =  0;
-                            
+
                             endStrip = originalName.indexOf("[");
                             if (endStrip == -1)
                                 endStrip =  originalName.length();
-                            
+
                             nameTagStrip =  originalName.substring(beginStrip,endStrip).trim();
-                                    
-                         if((joiningClient.getChannelId() == localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
+
+                            OutputChannel ircchannel;
+                    //        ircchannel =  irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
+
+                        // if((movingClient.getChannelId() == localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
                             //api.sendChannelMessage("Welcome to Wayne Manor " + joinerNickname.substring(joinerNickname.indexOf("|")+1,joinerNickname.indexOf("[")).trim() + ". May I take your coat?");
-			OutputChannel ircchannel =  irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
-                                               
-                                                ircchannel.message(nameTagStrip + " Joined Channel " + channelInfo.getName());
-                         }
-                         
+                            // ircchannel.message(nameTagStrip + " Joined Channel " + channelInfo.getName());
+                        // }
+                         //if((movingClient.getChannelId() != localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
+
+                             //  ircchannel.message(nameTagStrip + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
+                        // }
                         }
 
                         @Override
 			public void onClientLeave(ClientLeaveEvent e) {
-                            
-                            ClientInfo leavingClient;
-                            ServerQueryInfo localInfo;
-                            ChannelInfo channelInfo;
-                                    
-                           // leavingClient = api.getClientInfo( e.getClientId());
-                           // localInfo = api.whoAmI();
-                           // channelInfo = api.getChannelInfo(localInfo.getChannelId());
-                           
-                           String originalName; 
-                           String nameTagStrip;                                                                                         
-                           
-                           int beginStrip;
-                           int endStrip;
-                           
-                           //originalName = leavingClient.getNickname();
-                            
-                          //  beginStrip = originalName.indexOf("|")+1;
-                           // if (beginStrip == -1)
-                                beginStrip =  0;
-                            
-                           // endStrip = originalName.indexOf("[");
-                            //if (endStrip == -1)
-                             //   endStrip =  originalName.length();
-                            
-                           // nameTagStrip =  originalName.substring(beginStrip,endStrip).trim();
-                            
-                         //if((leavingClient.getChannelId() == localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
-                            //api.sendChannelMessage("Welcome to Wayne Manor " + joinerNickname.substring(joinerNickname.indexOf("|")+1,joinerNickname.indexOf("[")).trim() + ". May I take your coat?");
-			//OutputChannel ircchannel =  irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
-                                               
-                         //                       ircchannel.message(nameTagStrip + " Left Channel " + channelInfo.getName());
-                        // }
-                            
-                            
+                            System.out.println("onClientLeave fired");
 			}
 
                         @Override
-			public void onClientJoin(ClientJoinEvent e) {ClientInfo joiningClient;
-                            ServerQueryInfo localInfo;
-                            ChannelInfo channelInfo;
-                                    
-                            joiningClient = api.getClientInfo( e.getClientId());
-                            localInfo = api.whoAmI();
-                            channelInfo = api.getChannelInfo(localInfo.getChannelId());
-                            
-                           String originalName; 
-                           String nameTagStrip;                                                                                         
-                           
-                           int beginStrip;
-                           int endStrip;
-                           
-                           originalName = joiningClient.getNickname();
-                            
-                            beginStrip = originalName.indexOf("|")+1;
-                            if (beginStrip == -1)
-                                beginStrip =  0;
-                            
-                            endStrip = originalName.indexOf("[");
-                            if (endStrip == -1)
-                                endStrip =  originalName.length();
-                            
-                            nameTagStrip =  originalName.substring(beginStrip,endStrip).trim();
-                                    
-                         if((joiningClient.getChannelId() == localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
-                            //api.sendChannelMessage("Welcome to Wayne Manor " + joinerNickname.substring(joinerNickname.indexOf("|")+1,joinerNickname.indexOf("[")).trim() + ". May I take your coat?");
-			OutputChannel ircchannel =  irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
-                                               
-                                                ircchannel.message(nameTagStrip + " Joined Channel " + channelInfo.getName());
-                         }
-                            
+			public void onClientJoin(ClientJoinEvent e) {
+                              System.out.println("onClientJoin fired");
                         }
 
                         @Override
@@ -222,28 +179,28 @@ public class TS3Bot {
 
                         @Override
 			public void onChannelCreate(ChannelCreateEvent e) {
-				
+
 			}
 
                         @Override
 			public void onChannelDeleted(ChannelDeletedEvent e) {
-				
+
 			}
 
                         @Override
 			public void onChannelMoved(ChannelMovedEvent e) {
-				
+
 			}
 
                         @Override
 			public void onChannelPasswordChanged(ChannelPasswordChangedEvent e) {
-				
+
 			}
 		});
-    
     }
     public TS3Api getAPI(){
      return Api;
-    
+
     }
 }
+
