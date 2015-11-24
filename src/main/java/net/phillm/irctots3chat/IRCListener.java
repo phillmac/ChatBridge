@@ -31,8 +31,10 @@ public class IRCListener extends ListenerAdapter {
                 if (event.getMessage().startsWith(".ping")){
                         event.respond("Pong!");
                 } else {
-                    
-                    irctots3chat.getTS3().getAPI().sendChannelMessage(event.getUser().getNick() + " : " + event.getMessage());
+                    String nickname = event.getUser().getNick();
+                    String message = event.getMessage();
+                    irctots3chat.getTS3().getAPI().sendChannelMessage(nickname + " : " + message);
+                    irctots3chat.executeCommand("./skype-msg.sh " + nickname + " : " + message);
                 }
                 }
         }
