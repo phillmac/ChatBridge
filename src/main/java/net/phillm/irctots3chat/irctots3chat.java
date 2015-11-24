@@ -82,7 +82,7 @@ public class irctots3chat {
                
 
 }
-        public static String executeCommand(String command) {
+        public static String executeCommand(String[] command) {
 
 		StringBuffer output = new StringBuffer();
 
