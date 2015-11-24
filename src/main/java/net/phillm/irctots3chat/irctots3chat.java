@@ -5,11 +5,17 @@
  */
 package net.phillm.irctots3chat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  *
@@ -18,17 +24,30 @@ import org.pircbotx.PircBotX;
 public class irctots3chat {
     private static TS3Bot ts3;
     private static MultiBotManager<PircBotX> ircbotmanager;
-     
+                 
+
 	public static void main(String[] args) {
             //new ChatBotExample();
             //new TS3Bot();
             try {
                 System.out.println("Chatbridge initalizing");
                                 //Configure what we want our bot to do
+                
+                 InputStream ircConfigInput = null;
+                try {
+                    ircConfigInput =  new FileInputStream(new File("ircconfig.yml"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("Could not find ircconfig.yml. Please check that it exists.");
+                }
+
+                Yaml ircConfigParser = new Yaml();
+                Map<String,String> ircConfigMap = (Map<String,String>)ircConfigParser.load(ircConfigInput);
+                
                 Configuration configuration = new Configuration.Builder()
-                        .setName("TS3") //Set the nick of the bot. CHANGE IN YOUR CODE
-                        .setServerHostname("irc.phillm.net") //Join the freenode network
-                        .addAutoJoinChannel("#mcserverchat-test", "mcircchat112") //Join the official #pircbotx channel
+                        .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
+                        .setServerHostname(ircConfigMap.get("host")) //
+                        .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
                         .addListener(new IRCListener()) //Add our listener that will be called on Events
                         .buildConfiguration();
 
