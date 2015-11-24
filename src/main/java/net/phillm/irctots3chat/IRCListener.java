@@ -35,7 +35,7 @@ public class IRCListener extends ListenerAdapter {
                     String message = event.getMessage();
                     irctots3chat.getTS3().getAPI().sendChannelMessage(nickname + " : " + message);
                     irctots3chat.executeCommand("./skype-msg.sh " + "\"" + nickname + " : " + message + "\"");
-                    System.out.println("sent to skype: ./skype-msg.sh " + "\"" + nickname + " : " + message + "\"");
+                    System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + " : " + message + "'");
                 }
                 }
         }
