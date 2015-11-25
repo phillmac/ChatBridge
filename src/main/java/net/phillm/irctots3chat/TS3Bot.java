@@ -93,6 +93,10 @@ public class TS3Bot {
                         endStrip = originalName.length();
                     }
                     nameTagStrip = originalName.substring(beginStrip, endStrip).trim();
+                    while (nameTagStrip.startsWith(".")){
+                        nameTagStrip = nameTagStrip.substring(1);
+                    }
+                }
                     switch (e.getMessage()) {
                         case "!ping":
                             api.sendChannelMessage("pong");
@@ -114,93 +118,95 @@ public class TS3Bot {
             }
 
             @Override
-            public void onServerEdit(ServerEditedEvent e) {
 
-            }
+    public void onServerEdit(ServerEditedEvent e) {
 
-            @Override
-            public void onClientMoved(ClientMovedEvent e) {
-                System.out.println("onClientMoved fired");
-                ClientInfo movingClient;
+    }
+
+    @Override
+    public void onClientMoved(ClientMovedEvent e) {
+        System.out.println("onClientMoved fired");
+        ClientInfo movingClient;
                            // ServerQueryInfo localInfo;
-                //ChannelInfo channelInfo;
+        //ChannelInfo channelInfo;
 
-                movingClient = api.getClientInfo(e.getClientId());
+        movingClient = api.getClientInfo(e.getClientId());
                            // localInfo = api.whoAmI();
-                // channelInfo = api.getChannelInfo(localInfo.getChannelId());
+        // channelInfo = api.getChannelInfo(localInfo.getChannelId());
 
-                String originalName;
-                String nameTagStrip;
-                int beginStrip;
-                int endStrip;
+        String originalName;
+        String nameTagStrip;
+        int beginStrip;
+        int endStrip;
 
-                originalName = movingClient.getNickname();
+        originalName = movingClient.getNickname();
 
-                beginStrip = originalName.indexOf("|") + 1;
-                if (beginStrip == -1) {
-                    beginStrip = 0;
-                }
+        beginStrip = originalName.indexOf("|") + 1;
+        if (beginStrip == -1) {
+            beginStrip = 0;
+        }
 
-                endStrip = originalName.indexOf("[");
-                if (endStrip == -1) {
-                    endStrip = originalName.length();
-                }
+        endStrip = originalName.indexOf("[");
+        if (endStrip == -1) {
+            endStrip = originalName.length();
+        }
 
-                nameTagStrip = originalName.substring(beginStrip, endStrip).trim();
+        nameTagStrip = originalName.substring(beginStrip, endStrip).trim();
 
-                OutputChannel ircchannel;
+        OutputChannel ircchannel;
                     //        ircchannel =  irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
 
                         // if((movingClient.getChannelId() == localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
-                //api.sendChannelMessage("Welcome to Wayne Manor " + joinerNickname.substring(joinerNickname.indexOf("|")+1,joinerNickname.indexOf("[")).trim() + ". May I take your coat?");
-                // ircchannel.message(nameTagStrip + " Joined Channel " + channelInfo.getName());
-                // }
-                //if((movingClient.getChannelId() != localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
-                             //  ircchannel.message(nameTagStrip + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
-                // }
-            }
+        //api.sendChannelMessage("Welcome to Wayne Manor " + joinerNickname.substring(joinerNickname.indexOf("|")+1,joinerNickname.indexOf("[")).trim() + ". May I take your coat?");
+        // ircchannel.message(nameTagStrip + " Joined Channel " + channelInfo.getName());
+        // }
+        //if((movingClient.getChannelId() != localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
+        //  ircchannel.message(nameTagStrip + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
+        // }
+    }
 
-            @Override
-            public void onClientLeave(ClientLeaveEvent e) {
-                System.out.println("onClientLeave fired");
-            }
+    @Override
+    public void onClientLeave(ClientLeaveEvent e) {
+        System.out.println("onClientLeave fired");
+    }
 
-            @Override
-            public void onClientJoin(ClientJoinEvent e) {
-                System.out.println("onClientJoin fired");
-            }
+    @Override
+    public void onClientJoin(ClientJoinEvent e) {
+        System.out.println("onClientJoin fired");
+    }
 
-            @Override
-            public void onChannelEdit(ChannelEditedEvent e) {
+    @Override
+    public void onChannelEdit(ChannelEditedEvent e) {
 
-            }
+    }
 
-            @Override
-            public void onChannelDescriptionChanged(
-                    ChannelDescriptionEditedEvent e) {
+    @Override
+    public void onChannelDescriptionChanged(
+            ChannelDescriptionEditedEvent e) {
 
-            }
+    }
 
-            @Override
-            public void onChannelCreate(ChannelCreateEvent e) {
+    @Override
+    public void onChannelCreate(ChannelCreateEvent e) {
 
-            }
+    }
 
-            @Override
-            public void onChannelDeleted(ChannelDeletedEvent e) {
+    @Override
+    public void onChannelDeleted(ChannelDeletedEvent e) {
 
-            }
+    }
 
-            @Override
-            public void onChannelMoved(ChannelMovedEvent e) {
+    @Override
+    public void onChannelMoved(ChannelMovedEvent e) {
 
-            }
+    }
 
-            @Override
-            public void onChannelPasswordChanged(ChannelPasswordChangedEvent e) {
+    @Override
+    public void onChannelPasswordChanged(ChannelPasswordChangedEvent e) {
 
-            }
-        });
+    }
+}
+);
     }
 
     public TS3Api getAPI() {
