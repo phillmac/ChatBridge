@@ -38,9 +38,11 @@ public class IRCListener extends ListenerAdapter {
                         System.out.println("nick " + nickname + "is skype. not sending msg");
                     }else {
                         
-                        //irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message});
-                        
-                    System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
+                        if (irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).equals("ok")){    
+                            System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
+                        } else {
+                            System.out.println("Failed to send to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
+                        }
                     }
                 }
                 }
