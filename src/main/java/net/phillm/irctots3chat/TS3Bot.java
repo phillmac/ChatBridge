@@ -96,7 +96,7 @@ public class TS3Bot {
                     while (nameTagStrip.startsWith(".")){
                         nameTagStrip = nameTagStrip.substring(1);
                     }
-                }
+                
                     switch (e.getMessage()) {
                         case "!ping":
                             api.sendChannelMessage("pong");
@@ -107,9 +107,9 @@ public class TS3Bot {
                         default:
                             if (!api.whoAmI().getNickname().equals(e.getInvokerName())) {
 
-                                OutputChannel ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
+                                OutputChannel ircChannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
                                 String message = e.getMessage();
-                                ircchannel.message(nameTagStrip + " : " + message);
+                                ircChannel.message(nameTagStrip + " : " + message);
                                 irctots3chat.executeCommand(new String[]{"./skype-msg.sh", "TS3" + nameTagStrip + ": " + message});
                             }
                             break;
@@ -165,7 +165,7 @@ public class TS3Bot {
         // }
     }
 
-    @Override
+   @Override
     public void onClientLeave(ClientLeaveEvent e) {
         System.out.println("onClientLeave fired");
     }
