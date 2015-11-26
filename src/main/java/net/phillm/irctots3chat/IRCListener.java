@@ -27,7 +27,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 public class IRCListener extends ListenerAdapter {
         @Override
         public void onGenericMessage(GenericMessageEvent event) {
-                //When someone says hello, respond with Hello World
+                 System.out.println("IRC onGenericMessage fired");
                 if (event.getMessage().startsWith(".ping")){
                         event.respond("Pong!");
                 } else {
@@ -39,6 +39,7 @@ public class IRCListener extends ListenerAdapter {
                     }else {
                         
                         irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message});
+                        
                     System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
                     }
                 }
