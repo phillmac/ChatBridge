@@ -37,8 +37,9 @@ public class IRCListener extends ListenerAdapter {
                     if (nickname.equalsIgnoreCase("skype")){
                         System.out.println("nick " + nickname + " is skype. not sending msg");
                     }else {
-                        
-                        if (irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).equals("OK")){    
+                        String sendToSkypeResult = irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message});
+                        System.out.println("Got restult: " + sendToSkypeResult);
+                        if (sendToSkypeResult.equalsIgnoreCase("OK")){    
                             System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
                         } else {
                             System.out.println("Failed to send to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
