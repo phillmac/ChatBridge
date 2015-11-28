@@ -31,6 +31,7 @@ public class TS3Bot {
     public ArrayList<String> stripableTS3FormattingTags;
 
     public TS3Bot() {
+        stripableTS3FormattingTags = new ArrayList();
         stripableTS3FormattingTags.add("[URL]");
         stripableTS3FormattingTags.add("[/URL]");
 
