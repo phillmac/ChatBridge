@@ -100,7 +100,7 @@ public class TS3Bot {
                             if (!api.whoAmI().getNickname().equals(e.getInvokerName())) {
 
                                 OutputChannel ircChannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
-                                String message = e.getMessage();
+                                String message = stripTS3FormattingTags(e.getMessage());
                                 ircChannel.message(nameTagStrip + " : " + message);
                                 irctots3chat.executeCommand(new String[]{"./skype-msg.sh", "TS3" + nameTagStrip + ": " + message});
                             }
