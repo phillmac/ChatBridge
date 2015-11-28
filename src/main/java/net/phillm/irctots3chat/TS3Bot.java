@@ -33,7 +33,7 @@ public class TS3Bot {
     public TS3Bot() {
         stripableTS3FormattingTags = new ArrayList();
         stripableTS3FormattingTags.add("(\\[URL\\])");
-        stripableTS3FormattingTags.add("\\([\\/URL\\])");
+        stripableTS3FormattingTags.add("(\\[\\/URL\\])");
 
         final TS3Config config = new TS3Config();
         //config.setDebugLevel(Level.ALL);
