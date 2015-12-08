@@ -27,7 +27,7 @@ import java.io.*;
 public class TS3Bot {
 
     private final TS3Api Api;
-    private ArrayList<Integer> uidsInChannelBefore;
+    private Map<Integer, String> uidsInChannel;
     public ArrayList<String> stripableTS3FormattingTags;
 
     public TS3Bot() {
@@ -101,10 +101,11 @@ public class TS3Bot {
             public void onClientMoved(ClientMovedEvent e) {
                 System.out.println("onClientMoved fired");
                 ClientInfo movingClient;
+                Integer movingClientId = e.getClientId();
                 ServerQueryInfo localInfo;
                 ChannelInfo channelInfo;
 
-                movingClient = api.getClientInfo(e.getClientId());
+                movingClient = api.getClientInfo(movingClientId);
                 localInfo = api.whoAmI();
                 channelInfo = api.getChannelInfo(localInfo.getChannelId());
 
@@ -114,13 +115,17 @@ public class TS3Bot {
                 OutputChannel ircchannel;
                 ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
 
-                 if((movingClient.getChannelId() == localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalClientName))){
-                //api.sendChannelMessage("Welcome to Wayne Manor " + joinerNickname.substring(joinerNickname.indexOf("|")+1,joinerNickname.indexOf("[")).trim() + ". May I take your coat?");
-                 ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
-                 }
-                //if((movingClient.getChannelId() != localInfo.getChannelId()) &&(! localInfo.getNickname().equals(originalName))){
-                //  ircchannel.message(nameTagStrip + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
-                // }
+                if ((movingClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                    ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                    uidsInChannel.put(movingClientId, clientName);
+                } else if ((movingClient.getChannelId() != localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                    if (uidsInChannel.keySet().contains(movingClientId)) {
+                        ircchannel.message(clientName + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
+                        uidsInChannel.remove(movingClientId);
+                    }
+                } else {
+                    System.out.println("onClientMoved fired: Unrelated channel");
+                }
             }
 
             @Override
