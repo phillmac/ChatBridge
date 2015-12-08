@@ -5,51 +5,40 @@
  */
 package net.phillm.irctots3chat;
 
-
-
-
-
+import com.github.theholywaffle.teamspeak3.TS3Api;
 import static org.pircbotx.Colors.removeFormattingAndColors;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.types.GenericMessageEvent;
-
-
-
 
 /**
  *
  * @author Phillip
  */
-
-    
-    
-
-
 public class IRCListener extends ListenerAdapter {
-        @Override
-        public void onGenericMessage(GenericMessageEvent event) {
-                 System.out.println("IRC onGenericMessage fired");
-                if (event.getMessage().startsWith(".ping")){
-                        event.respond("Pong!");
+
+    @Override
+    public void onGenericMessage(GenericMessageEvent event) {
+        System.out.println("IRC onGenericMessage fired");
+        if (event.getMessage().startsWith(".ping")) {
+            event.respond("Pong!");
+        } else {
+            String nickname = event.getUser().getNick();
+            String message = removeFormattingAndColors(event.getMessage());
+            TS3Api api = irctots3chat.getTS3().getAPI();
+            if (api != null) {
+                api.sendChannelMessage(nickname + " : " + message);
+            }
+            if (nickname.equalsIgnoreCase("skype")) {
+                System.out.println("nick " + nickname + " is skype. not sending msg");
+            } else {
+                String sendToSkypeResult = irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
+                System.out.println("Got restult: " + sendToSkypeResult);
+                if (sendToSkypeResult.equalsIgnoreCase("OK")) {
+                    System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
                 } else {
-                    String nickname = event.getUser().getNick();
-                    String message = removeFormattingAndColors(event.getMessage());
-                    irctots3chat.getTS3().getAPI().sendChannelMessage(nickname + " : " + message);
-                    if (nickname.equalsIgnoreCase("skype")){
-                        System.out.println("nick " + nickname + " is skype. not sending msg");
-                    }else {
-                        String sendToSkypeResult = irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
-                        System.out.println("Got restult: " + sendToSkypeResult);
-                        if (sendToSkypeResult.equalsIgnoreCase("OK")){    
-                            System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
-                        } else {
-                            System.out.println("Failed to send to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
-                        }
-                    }
+                    System.out.println("Failed to send to skype: ./skype-msg.sh " + "'" + nickname + ":" + message + "'");
                 }
-                }
+            }
         }
-        
-
-
- 
+    }
+}
