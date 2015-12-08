@@ -24,9 +24,17 @@ public class IRCListener extends ListenerAdapter {
         } else {
             String nickname = event.getUser().getNick();
             String message = removeFormattingAndColors(event.getMessage());
-            TS3Api api = irctots3chat.getTS3().getAPI();
-            if (api != null) {
-                api.sendChannelMessage(nickname + " : " + message);
+            
+            TS3Bot ts3Bot = irctots3chat.getTS3();
+            if (ts3Bot != null) {
+                TS3Api api = ts3Bot.getAPI();
+                if (api != null) {
+                    api.sendChannelMessage(nickname + " : " + message);
+                } else {
+                    System.out.println("Can't send to TS3: got null api ref.");
+                }
+            } else {
+                 System.out.println("Can't send to TS3: bot not initalsed yet.");
             }
             if (nickname.equalsIgnoreCase("skype")) {
                 System.out.println("nick " + nickname + " is skype. not sending msg");
