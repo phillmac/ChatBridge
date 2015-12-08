@@ -35,6 +35,8 @@ public class TS3Bot {
         stripableTS3FormattingTags = new ArrayList();
         stripableTS3FormattingTags.add("(\\[URL\\])");
         stripableTS3FormattingTags.add("(\\[\\/URL\\])");
+        stripableTS3FormattingTags.add("(\\[url\\])");
+        stripableTS3FormattingTags.add("(\\[\\/url\\])");
 
         final TS3Config config = new TS3Config();
         //config.setDebugLevel(Level.ALL);
@@ -132,10 +134,21 @@ public class TS3Bot {
 
             @Override
             public void onClientLeave(ClientLeaveEvent e) {
+                Integer leavingClientId = e.getClientId(); 
+                
+                if (uidsInChannel.keySet().contains(leavingClientId)) {
+                    OutputChannel ircchannel;
+                ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                    ircchannel.message(uidsInChannel.get(leavingClientId) + " Left the channel");
+                uidsInChannel.remove(leavingClientId);
+                   
+                            
+                } else {
+                    System.out.println("onClientLeave fired: Unrelated client");
+                   
+                }
                 
                 
-                
-                System.out.println("onClientLeave fired: Unrelated client");
             }
 
             @Override
@@ -149,8 +162,7 @@ public class TS3Bot {
             }
 
             @Override
-            public void onChannelDescriptionChanged(
-                    ChannelDescriptionEditedEvent e) {
+            public void onChannelDescriptionChanged(ChannelDescriptionEditedEvent e) {
 
             }
 
