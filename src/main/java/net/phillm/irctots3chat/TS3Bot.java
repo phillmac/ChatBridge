@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.pircbotx.output.OutputChannel;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
+import java.util.HashMap;
 
 /**
  *
@@ -27,7 +28,7 @@ import java.io.*;
 public class TS3Bot {
 
     private final TS3Api Api;
-    private Map<Integer, String> uidsInChannel;
+    private Map<Integer, String> uidsInChannel = new HashMap();
     public ArrayList<String> stripableTS3FormattingTags;
 
     public TS3Bot() {
