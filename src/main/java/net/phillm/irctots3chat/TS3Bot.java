@@ -100,7 +100,6 @@ public class TS3Bot {
 
             @Override
             public void onClientMoved(ClientMovedEvent e) {
-                System.out.println("onClientMoved fired");
                 ClientInfo movingClient;
                 Integer movingClientId = e.getClientId();
                 ServerQueryInfo localInfo;
@@ -123,9 +122,9 @@ public class TS3Bot {
                     if (uidsInChannel.keySet().contains(movingClientId)) {
                         ircchannel.message(clientName + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
                         uidsInChannel.remove(movingClientId);
+                    } else {
+                        System.out.println("onClientMoved fired: Unrelated channel");
                     }
-                } else {
-                    System.out.println("onClientMoved fired: Unrelated channel");
                 }
             }
 
