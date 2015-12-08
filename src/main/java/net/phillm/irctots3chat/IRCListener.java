@@ -9,6 +9,7 @@ package net.phillm.irctots3chat;
 
 
 
+import static org.pircbotx.Colors.removeFormattingAndColors;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
@@ -32,7 +33,7 @@ public class IRCListener extends ListenerAdapter {
                         event.respond("Pong!");
                 } else {
                     String nickname = event.getUser().getNick();
-                    String message = event.getMessage();
+                    String message = removeFormattingAndColors(event.getMessage());
                     irctots3chat.getTS3().getAPI().sendChannelMessage(nickname + " : " + message);
                     if (nickname.equalsIgnoreCase("skype")){
                         System.out.println("nick " + nickname + " is skype. not sending msg");
