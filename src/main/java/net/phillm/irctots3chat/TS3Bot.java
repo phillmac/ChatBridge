@@ -125,12 +125,17 @@ public class TS3Bot {
                     } else {
                         System.out.println("onClientMoved fired: Unrelated channel");
                     }
+                } else if (localInfo.getNickname().equals(originalClientName)) {
+                    ircchannel.message(clientName + " IRC Bot moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
                 }
             }
 
             @Override
             public void onClientLeave(ClientLeaveEvent e) {
-                System.out.println("onClientLeave fired");
+                
+                
+                
+                System.out.println("onClientLeave fired: Unrelated client");
             }
 
             @Override
