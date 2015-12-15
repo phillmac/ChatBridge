@@ -52,7 +52,7 @@ public class TS3Bot {
         }
 
         Yaml ts3ConfigParser = new Yaml();
-        Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
+        final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
 
         config.setHost(ts3ConfigMap.get("host"));
         config.setLoginCredentials(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
@@ -164,7 +164,7 @@ public class TS3Bot {
                 System.out.println("new client ID: " + joiningClientId.toString());
 
                 try {
-                    Thread.sleep(ts3ConfigMap.get("joinProccessingDelay"));
+                    Thread.sleep(Long.parseLong(ts3ConfigMap.get("joinProccessingDelay")));
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
