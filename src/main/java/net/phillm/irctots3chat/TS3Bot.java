@@ -174,6 +174,8 @@ public class TS3Bot {
                 List<Integer> clientIdsList = clientList.map(#Client.getId());
 //                
                 if (clientIdsList.contains(joiningClientId)) {
+                    System.out.println("New client with ID: " + joiningClientId + "is valid");
+                }
 //
 //                    joiningClient = api.getClientInfo(joiningClientId);
 //                    localInfo = api.whoAmI();
