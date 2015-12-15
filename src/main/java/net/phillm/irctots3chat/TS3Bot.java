@@ -135,14 +135,14 @@ public class TS3Bot {
             @Override
             public void onClientLeave(ClientLeaveEvent e) {
                 Integer leavingClientId = e.getClientId(); 
-                
+            
                 if (uidsInChannel.keySet().contains(leavingClientId)) {
                     OutputChannel ircchannel;
-                ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                    ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
                     ircchannel.message(uidsInChannel.get(leavingClientId) + " Left the channel");
-                uidsInChannel.remove(leavingClientId);
-                   
-                            
+                    uidsInChannel.remove(leavingClientId);
+
+    
                 } else {
                     System.out.println("onClientLeave fired: Unrelated client");
                    
@@ -153,7 +153,26 @@ public class TS3Bot {
 
             @Override
             public void onClientJoin(ClientJoinEvent e) {
-                System.out.println("onClientJoin fired");
+                ClientInfo joiningClient;
+                Integer joiningClientId = e.getClientId();
+                ServerQueryInfo localInfo;
+                ChannelInfo channelInfo;
+
+                joiningClient = api.getClientInfo(joiningClientId);
+                localInfo = api.whoAmI();
+                channelInfo = api.getChannelInfo(localInfo.getChannelId());
+                String originalClientName = joiningClient.getNickname();
+                String clientName = nameTagStrip(originalClientName);
+
+                if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                    OutputChannel ircchannel;
+                    
+                    ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                    ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                    uidsInChannel.put(joiningClientId, clientName);
+                } else {
+                    System.out.println("onClientJoin fired: Unrelated client");
+                }
             }
 
             @Override
