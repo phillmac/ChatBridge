@@ -170,10 +170,10 @@ public class TS3Bot {
 //                    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
 //                }
 //               
-//                List<Client> clientList = api.getClients();
-//                List<Integer> clientIdsList = api.getClients.map(#Client.getId());
+                List<Client> clientList = api.getClients();
+                List<Integer> clientIdsList = clientList.map(#Client.getId());
 //                
-//                if (clientIdsList.contains(joiningClientId)) {
+                if (clientIdsList.contains(joiningClientId)) {
 //
 //                    joiningClient = api.getClientInfo(joiningClientId);
 //                    localInfo = api.whoAmI();
@@ -190,8 +190,8 @@ public class TS3Bot {
 //                    } else {
 //                        System.out.println("onClientJoin fired: Unrelated client");
 //                    }
-//                } else {
-//                    System.out.println("New client with ID: " + joiningClientId + "left");
+                } else {
+                    System.out.println("New client with ID: " + joiningClientId + "left");
 //                }
             }
 
