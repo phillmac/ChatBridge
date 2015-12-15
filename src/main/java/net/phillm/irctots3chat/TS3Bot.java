@@ -160,10 +160,9 @@ public class TS3Bot {
                 Integer joiningClientId = e.getClientId();
                 ServerQueryInfo localInfo;
                 ChannelInfo channelInfo;
-                
-                
+
                 System.out.println("new client ID: " + joiningClientId.toString());
-                
+
 //                try {
 //                    Thread.sleep(100);
 //                } catch (InterruptedException ex) {
@@ -176,28 +175,26 @@ public class TS3Bot {
                     clientIdsList.add(client.getId());
                 }
 
-//                
                 if (clientIdsList.contains(joiningClientId)) {
                     System.out.println("New client with ID: " + joiningClientId + "is valid");
-                
-//
-//                    joiningClient = api.getClientInfo(joiningClientId);
-//                    localInfo = api.whoAmI();
-//                    channelInfo = api.getChannelInfo(localInfo.getChannelId());
-//                    /String originalClientName = joiningClient.getNickname();
-//                    String clientName = nameTagStrip(originalClientName);
-//
-//                    if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
-//                        OutputChannel ircchannel;
-//
-//                        ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
-//                        ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
-//                        uidsInChannel.put(joiningClientId, clientName);
-//                    } else {
-//                        System.out.println("onClientJoin fired: Unrelated client");
- //                   }
+
+                    joiningClient = api.getClientInfo(joiningClientId);
+                    localInfo = api.whoAmI();
+                    channelInfo = api.getChannelInfo(localInfo.getChannelId());
+                    String originalClientName = joiningClient.getNickname();
+                    String clientName = nameTagStrip(originalClientName);
+
+                    if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                        OutputChannel ircchannel;
+
+                        ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                        ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                        uidsInChannel.put(joiningClientId, clientName);
+                    } else {
+                        System.out.println("onClientJoin fired: Unrelated client");
+                    }
                 } else {
-                    System.out.println("New client with ID: " + joiningClientId + "left");
+                    System.out.println("New client with ID: " + joiningClientId + " left");
                 }
             }
 
