@@ -163,7 +163,7 @@ public class TS3Bot {
 
                 System.out.println("new client ID: " + joiningClientId.toString());
                 try {
-                    Thread.sleep(ts3ConfigMap.get("joinProccessingDelay"));
+                    Thread.sleep(300);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
