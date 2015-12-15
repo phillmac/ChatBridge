@@ -13,7 +13,7 @@ secret=""
 skypeaddress=""
 msg=$1
 
-if [ -x skype-msg.settings]; then 
+if [ -x skype-msg.settings ]; then 
   . skype-msg.settings
 fi
 
