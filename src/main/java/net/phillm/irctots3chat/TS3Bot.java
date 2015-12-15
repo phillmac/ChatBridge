@@ -161,6 +161,7 @@ public class TS3Bot {
                 ServerQueryInfo localInfo;
                 ChannelInfo channelInfo;
                 
+                
                 System.out.println("new client ID: " + joiningClientId.toString());
                 
 //                try {
