@@ -11,6 +11,7 @@ import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.event.*;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
+import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ServerQueryInfo;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.pircbotx.output.OutputChannel;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -157,21 +160,37 @@ public class TS3Bot {
                 Integer joiningClientId = e.getClientId();
                 ServerQueryInfo localInfo;
                 ChannelInfo channelInfo;
+                
+                System.out.println("new client ID: " + joiningClientId.toString());
+                
+                //try {
+                //    Thread.sleep(100);
+                //} catch (InterruptedException ex) {
+                //    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                //}
+               
+                List<Client> clientList = api.getClients();
+                List<Integer> clientIdsList = api.getClients.map(#Client.getId());
+                
+                if (clientIdsList.contains(joiningClientId)) {
 
-                joiningClient = api.getClientInfo(joiningClientId);
-                localInfo = api.whoAmI();
-                channelInfo = api.getChannelInfo(localInfo.getChannelId());
-                String originalClientName = joiningClient.getNickname();
-                String clientName = nameTagStrip(originalClientName);
+                    joiningClient = api.getClientInfo(joiningClientId);
+                    localInfo = api.whoAmI();
+                    channelInfo = api.getChannelInfo(localInfo.getChannelId());
+                    String originalClientName = joiningClient.getNickname();
+                    String clientName = nameTagStrip(originalClientName);
 
-                if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
-                    OutputChannel ircchannel;
-                    
-                    ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
-                    ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
-                    uidsInChannel.put(joiningClientId, clientName);
+                    if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                        OutputChannel ircchannel;
+
+                        ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                        ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                        uidsInChannel.put(joiningClientId, clientName);
+                    } else {
+                        System.out.println("onClientJoin fired: Unrelated client");
+                    }
                 } else {
-                    System.out.println("onClientJoin fired: Unrelated client");
+                    System.out.println("New client with ID: " + joiningClientId + "left");
                 }
             }
 
@@ -241,4 +260,5 @@ public class TS3Bot {
         }
         return nameTagStriped;
     }
+   
 }
