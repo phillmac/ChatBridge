@@ -163,12 +163,12 @@ public class TS3Bot {
 
                 System.out.println("new client ID: " + joiningClientId.toString());
 
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException ex) {
-//                    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//               
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
                 List<Client> clientsList = api.getClients();
                 List<Integer> clientIdsList = new ArrayList();
                 for (Client client : clientsList) {
@@ -176,12 +176,12 @@ public class TS3Bot {
                 }
 
                 if (clientIdsList.contains(joiningClientId)) {
-                    System.out.println("New client with ID: " + joiningClientId + "is valid");
+                    System.out.println("New client with ID: " + joiningClientId + " is valid");
 
                     joiningClient = api.getClientInfo(joiningClientId);
                     localInfo = api.whoAmI();
                     channelInfo = api.getChannelInfo(localInfo.getChannelId());
-                    String originalClientName = joiningClient.getNickname();
+                    String originalClientName = e.getClientNickname();
                     String clientName = nameTagStrip(originalClientName);
 
                     if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
