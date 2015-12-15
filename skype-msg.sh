@@ -13,10 +13,17 @@ secret=""
 skypeaddress=""
 msg=$1
 
-if [ -x skype-msg.settings]; then . skype-msg.settings; fi
+if [ -x skype-msg.settings]; then 
+  . skype-msg.settings
+fi
 
 if [ -z "$chat" ] || [ -z "$secret" ] || [ -z  "$skypeaddress" ]; then
-echo "Please check your settings in $0"
+  echo "Please check your settings."
+
+  if [ -e skype-msg.settings ] && [ ! -x skype-msg.settings ]; then
+    echo "skype-msg.settings is not executable."
+  fi
+
 fi
 
 md5=`echo -n "$chat$msg$secret" | md5sum`
