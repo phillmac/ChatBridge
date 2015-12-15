@@ -13,6 +13,8 @@ secret=""
 skypeaddress=""
 msg=$1
 
+if [ -x skype-msg.settings]; then . skype-msg.settings; fi
+
 if [ -z "$chat" ] || [ -z "$secret" ] || [ -z  "$skypeaddress" ]; then
 echo "Please check your settings in $0"
 fi
