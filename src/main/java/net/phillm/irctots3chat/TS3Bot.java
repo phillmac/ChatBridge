@@ -102,6 +102,7 @@ public class TS3Bot {
                                 if (ipFound) {
                                     api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
                                 }
+                                break;
 
                             case "!getircnick":
                                 api.sendChannelMessage("IRC bot nick is " + irctots3chat.getIRCManger().getBots().first().getNick());
