@@ -91,12 +91,16 @@ public class TS3Bot {
                                 break;
                             case "!findip":
                                 List<Client> clientsList = api.getClients();
+                                Boolean ipFound = false;
+
                                 for (Client client : clientsList) {
                                     if (api.getClientInfo(client.getId()).getIp().equals(msgContents.get(1))) {
                                         api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
-                                        break;
+                                        ipFound = true;
                                     }
-                                    api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
+                                    if (ipFound) {
+                                        api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
+                                    }
                                 }
 
                             case "!getircnick":
