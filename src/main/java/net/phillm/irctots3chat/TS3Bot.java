@@ -97,6 +97,7 @@ public class TS3Bot {
                                     if (api.getClientInfo(client.getId()).getIp().equals(msgContents.get(1))) {
                                         api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
                                         ipFound = true;
+                                        break;
                                     }
                                 }
                                 if (! ipFound) {
