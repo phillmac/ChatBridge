@@ -99,7 +99,7 @@ public class TS3Bot {
                                         ipFound = true;
                                     }
                                 }
-                                if (ipFound) {
+                                if (! ipFound) {
                                     api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
                                 }
                                 break;
