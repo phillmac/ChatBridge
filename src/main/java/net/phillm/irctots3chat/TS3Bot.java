@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class TS3Bot {
 
-    private final TS3ApiAsync  Api;
+    private  TS3ApiAsync  Api = null;
     private Map<Integer, String> uidsInChannel = new HashMap();
     public ArrayList<String> stripableTS3FormattingTags;
 
@@ -54,6 +54,7 @@ public class TS3Bot {
         }
 
         Yaml ts3ConfigParser = new Yaml();
+        if (ts3ConfigInput != null) {
         final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
 
         config.setHost(ts3ConfigMap.get("host"));
@@ -286,7 +287,9 @@ public class TS3Bot {
 
             }
         }
+                
         );
+        }
     }
 
     private String stripTS3FormattingTags(String message) {
@@ -297,8 +300,11 @@ public class TS3Bot {
     }
 
     public TS3ApiAsync getAPI() {
+        if (Api != null){
         return Api;
-
+        } else {
+            return null;
+        }
     }
 
     public String nameTagStrip(String originalName) {
