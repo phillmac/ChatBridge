@@ -5,7 +5,7 @@
  */
 package net.phillm.irctots3chat;
 
-import com.github.theholywaffle.teamspeak3.TS3Api;
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import static org.pircbotx.Colors.removeFormattingAndColors;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -27,7 +27,7 @@ public class IRCListener extends ListenerAdapter {
             
             TS3Bot ts3Bot = irctots3chat.getTS3();
             if (ts3Bot != null) {
-                TS3Api api = ts3Bot.getAPI();
+                TS3ApiAsync api = ts3Bot.getAPI();
                 if (api != null) {
                     api.sendChannelMessage(nickname + " : " + message);
                 } else {
