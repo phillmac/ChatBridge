@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package net.phillm.irctots3chat;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
@@ -10,10 +6,6 @@ import static org.pircbotx.Colors.removeFormattingAndColors;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
-/**
- *
- * @author Phillip
- */
 public class IRCListener extends ListenerAdapter {
 
     @Override
