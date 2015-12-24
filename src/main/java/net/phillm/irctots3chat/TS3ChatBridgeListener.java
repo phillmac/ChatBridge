@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.phillm.irctots3chat;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
@@ -19,10 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.pircbotx.output.OutputChannel;
 
-/**
- *
- * @author Phillip
- */
 public class TS3ChatBridgeListener implements TS3Listener{
     private final  TS3Bot ts3;
     private final TS3ApiAsync api;
@@ -243,5 +234,3 @@ public class TS3ChatBridgeListener implements TS3Listener{
 
     }
 }
-
-
