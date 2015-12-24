@@ -6,6 +6,7 @@
 package net.phillm.irctots3chat;
 
 import com.github.theholywaffle.teamspeak3.TS3Api;
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
@@ -31,11 +32,11 @@ import java.util.logging.Logger;
  */
 public class TS3Bot {
 
-    private final TS3Api Api;
+    private final TS3ApiAsync  Api;
     private Map<Integer, String> uidsInChannel = new HashMap();
     public ArrayList<String> stripableTS3FormattingTags;
 
-    public TS3Bot() {
+    public TS3Bot() throws InterruptedException {
         stripableTS3FormattingTags = new ArrayList();
         stripableTS3FormattingTags.add("(\\[URL\\])");
         stripableTS3FormattingTags.add("(\\[\\/URL\\])");
@@ -60,7 +61,7 @@ public class TS3Bot {
         final TS3Query query = new TS3Query(config);
         query.connect();
 
-        final TS3Api api = query.getApi();
+        final TS3ApiAsync  api = query.getAsyncApi();
         Api = api;
 
         api.selectVirtualServerById(1);
@@ -69,8 +70,8 @@ public class TS3Bot {
 
         api.setNickname(ts3ConfigMap.get("nick"));
 
-        api.moveClient(api.whoAmI().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).getId());
-        api.sendChannelMessage(api.whoAmI().getNickname() + " is active");
+        api.moveClient(api.whoAmI().get().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).get().getId());
+        api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
 
         api.registerAllEvents();
         api.addTS3Listeners(new TS3Listener() {
@@ -81,42 +82,53 @@ public class TS3Bot {
                 if (e.getTargetMode() == TextMessageTargetMode.CHANNEL) {
                     String senderName = nameTagStrip(e.getInvokerName());
 
-                    if (!api.whoAmI().getNickname().equals(e.getInvokerName())) {
-
-                        ArrayList<String> msgContents = new ArrayList(Arrays.asList(e.getMessage().split(" ")));
-
-                        switch (msgContents.get(0)) {
-                            case "!ping":
-                                api.sendChannelMessage("pong");
-                                break;
-                            case "!findip":
-                                List<Client> clientsList = api.getClients();
-                                Boolean ipFound = false;
-
-                                for (Client client : clientsList) {
-                                    if (api.getClientInfo(client.getId()).getIp().equals(msgContents.get(1))) {
-                                        api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
-                                        ipFound = true;
-                                        break;
+                    try {
+                        if (!api.whoAmI().get().getNickname().equals(e.getInvokerName())) {
+                            
+                            ArrayList<String> msgContents = new ArrayList(Arrays.asList(e.getMessage().split(" ")));
+                            
+                            switch (msgContents.get(0)) {
+                                case "!ping":
+                                    api.sendChannelMessage("pong");
+                                    break;
+                                case "!findip":
+                                    List<Client> clientsList;
+                                    Boolean ipFound = false;
+                                    try {
+                                        clientsList = api.getClients().get();
+                                        
+                                        
+                                        
+                                        for (Client client : clientsList) {
+                                            if (api.getClientInfo(client.getId()).get().getIp().equals(msgContents.get(1))) {
+                                                api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
+                                                ipFound = true;
+                                                break;
+                                            }
+                                        }
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                                     }
-                                }
-                                if (! ipFound) {
-                                    api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
-                                }
-                                break;
-
-                            case "!getircnick":
-                                api.sendChannelMessage("IRC bot nick is " + irctots3chat.getIRCManger().getBots().first().getNick());
-                                break;
-                            default:
-
-                                OutputChannel ircChannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
-                                String message = stripTS3FormattingTags(e.getMessage());
-                                ircChannel.message(senderName + " : " + message);
-                                irctots3chat.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + message});
-
-                                break;
+                                    if (! ipFound) {
+                                        api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
+                                    }
+                                    break;
+                                    
+                                case "!getircnick":
+                                    api.sendChannelMessage("IRC bot nick is " + irctots3chat.getIRCManger().getBots().first().getNick());
+                                    break;
+                                default:
+                                    
+                                    OutputChannel ircChannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel("#mcserverchat-test").send();
+                                    String message = stripTS3FormattingTags(e.getMessage());
+                                    ircChannel.message(senderName + " : " + message);
+                                    irctots3chat.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + message});
+                                    
+                                    break;
+                            }
                         }
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -129,33 +141,46 @@ public class TS3Bot {
 
             @Override
             public void onClientMoved(ClientMovedEvent e) {
-                ClientInfo movingClient;
+                ClientInfo movingClient = null;
                 Integer movingClientId = e.getClientId();
-                ServerQueryInfo localInfo;
-                ChannelInfo channelInfo;
+                ServerQueryInfo localInfo = null;
+                ChannelInfo channelInfo = null;
 
-                movingClient = api.getClientInfo(movingClientId);
-                localInfo = api.whoAmI();
-                channelInfo = api.getChannelInfo(localInfo.getChannelId());
+                try {
+                    movingClient = api.getClientInfo(movingClientId).get();
+                    localInfo = api.whoAmI().get();
+                    channelInfo = api.getChannelInfo(localInfo.getChannelId()).get();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (movingClient != null && localInfo != null && channelInfo != null ) {
+                    String originalClientName = movingClient.getNickname();
+                    String clientName = nameTagStrip(originalClientName);
 
-                String originalClientName = movingClient.getNickname();
-                String clientName = nameTagStrip(originalClientName);
+                    OutputChannel ircchannel;
+                    ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
 
-                OutputChannel ircchannel;
-                ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
-
-                if ((movingClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
-                    ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
-                    uidsInChannel.put(movingClientId, clientName);
-                } else if ((movingClient.getChannelId() != localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
-                    if (uidsInChannel.keySet().contains(movingClientId)) {
-                        ircchannel.message(clientName + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
-                        uidsInChannel.remove(movingClientId);
-                    } else {
-                        System.out.println("onClientMoved fired: Unrelated channel");
+                    if ((movingClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                        ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                        uidsInChannel.put(movingClientId, clientName);
+                    } else if ((movingClient.getChannelId() != localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                        if (uidsInChannel.keySet().contains(movingClientId)) {
+                            try {
+                                ircchannel.message(clientName + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).get().getName());
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            uidsInChannel.remove(movingClientId);
+                        } else {
+                            System.out.println("onClientMoved fired: Unrelated channel");
+                        }
+                    } else if (localInfo.getNickname().equals(originalClientName)) {
+                        try {
+                            ircchannel.message(clientName + " IRC Bot moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).get().getName());
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                } else if (localInfo.getNickname().equals(originalClientName)) {
-                    ircchannel.message(clientName + " IRC Bot moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).getName());
                 }
             }
 
@@ -178,10 +203,10 @@ public class TS3Bot {
 
             @Override
             public void onClientJoin(ClientJoinEvent e) {
-                ClientInfo joiningClient;
+                ClientInfo joiningClient = null;
                 Integer joiningClientId = e.getClientId();
-                ServerQueryInfo localInfo;
-                ChannelInfo channelInfo;
+                ServerQueryInfo localInfo = null;
+                ChannelInfo channelInfo = null;
 
                 System.out.println("new client ID: " + joiningClientId.toString());
                 try {
@@ -190,29 +215,41 @@ public class TS3Bot {
                     Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                List<Client> clientsList = api.getClients();
-                List<Integer> clientIdsList = new ArrayList();
-                for (Client client : clientsList) {
-                    clientIdsList.add(client.getId());
+                List<Client> clientsList = null;
+                try {
+                    clientsList = api.getClients().get();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                List<Integer> clientIdsList = new ArrayList();
+                if (clientsList != null) {
+                    for (Client client : clientsList) {
+                        clientIdsList.add(client.getId());
+                    }
+                }
                 if (clientIdsList.contains(joiningClientId)) {
                     System.out.println("New client with ID: " + joiningClientId + " is valid");
 
-                    joiningClient = api.getClientInfo(joiningClientId);
-                    localInfo = api.whoAmI();
-                    channelInfo = api.getChannelInfo(localInfo.getChannelId());
-                    String originalClientName = e.getClientNickname();
-                    String clientName = nameTagStrip(originalClientName);
+                    try {
+                        joiningClient = api.getClientInfo(joiningClientId).get();
+                        localInfo = api.whoAmI().get();
+                        channelInfo = api.getChannelInfo(localInfo.getChannelId()).get();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (joiningClient != null && localInfo != null && channelInfo != null) {
+                        String originalClientName = e.getClientNickname();
+                        String clientName = nameTagStrip(originalClientName);
 
-                    if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
-                        OutputChannel ircchannel;
+                        if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                            OutputChannel ircchannel;
 
-                        ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
-                        ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
-                        uidsInChannel.put(joiningClientId, clientName);
-                    } else {
-                        System.out.println("onClientJoin fired: Unrelated client");
+                            ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                            ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                            uidsInChannel.put(joiningClientId, clientName);
+                        } else {
+                            System.out.println("onClientJoin fired: Unrelated client");
+                        }
                     }
                 } else {
                     System.out.println("New client with ID: " + joiningClientId + " left");
@@ -259,7 +296,7 @@ public class TS3Bot {
         return message;
     }
 
-    public TS3Api getAPI() {
+    public TS3ApiAsync getAPI() {
         return Api;
 
     }
