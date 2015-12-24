@@ -56,7 +56,6 @@ public class TS3Bot {
         final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
 
         config.setHost(ts3ConfigMap.get("host"));
-        config.setLoginCredentials(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
 
         final TS3Query query = new TS3Query(config);
         query.connect();
@@ -65,6 +64,9 @@ public class TS3Bot {
         Api = api;
 
         api.selectVirtualServerById(1);
+        
+        api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
+        
         api.setNickname(ts3ConfigMap.get("nick"));
 
         api.moveClient(api.whoAmI().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).getId());
