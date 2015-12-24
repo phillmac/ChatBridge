@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.pircbotx.output.OutputChannel;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -77,10 +78,23 @@ public class TS3Bot {
                 System.out.println("onTextMessage fired");
                 if (e.getTargetMode() == TextMessageTargetMode.CHANNEL) {
                     String senderName = nameTagStrip(e.getInvokerName());
-                    switch (e.getMessage()) {
+                    ArrayList<String> msgContents = new ArrayList( Arrays.asList(e.getMessage().split(" ")));
+                    
+                    switch (msgContents.get(0)) {
                         case "!ping":
                             api.sendChannelMessage("pong");
                             break;
+                        case "!findip":
+                            List<Client> clientsList = api.getClients();
+                            for (Client client : clientsList) {
+                                if (api.getClientInfo(client.getId()).getIp().equals(msgContents.get(1))){
+                                     api.sendChannelMessage("Found client with ip " +  msgContents.get(1) + " : " + client.getNickname());
+                                         break;   
+                                }
+                                   api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));   
+                            }
+                        
+                        
                         case "!getircnick":
                             api.sendChannelMessage("IRC bot nick is " + irctots3chat.getIRCManger().getBots().first().getNick());
                             break;
@@ -163,7 +177,7 @@ public class TS3Bot {
 
                 System.out.println("new client ID: " + joiningClientId.toString());
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(400);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
