@@ -98,10 +98,10 @@ public class TS3Bot {
                                         api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
                                         ipFound = true;
                                     }
-                                    if (ipFound) {
+                                }
+                              if (ipFound) {
                                         api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
                                     }
-                                }
 
                             case "!getircnick":
                                 api.sendChannelMessage("IRC bot nick is " + irctots3chat.getIRCManger().getBots().first().getNick());
