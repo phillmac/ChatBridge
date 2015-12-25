@@ -143,7 +143,7 @@ public class TS3ChatBridgeListener implements TS3Listener{
             ts3.removeChannelUid(leavingClientId);
 
         } else {
-            System.out.println("onClientLeave fired: Unrelated client");
+            System.out.println("onClientLeave fired: Unrelated client. ID: " + leavingClientId);
 
         }
 
