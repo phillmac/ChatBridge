@@ -2,6 +2,10 @@
 package net.phillm.irctots3chat;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.pircbotx.Colors.removeFormattingAndColors;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -13,6 +17,18 @@ public class IRCListener extends ListenerAdapter {
         System.out.println("IRC onGenericMessage fired");
         if (event.getMessage().startsWith(".ping")) {
             event.respond("Pong!");
+            if (event.getMessage().startsWith(".ts3isconnected")) {
+                try {
+                    if (irctots3chat.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
+                        event.respond("Connected!");
+                    } else {
+                        event.respond(" Not Connected!");
+                    }
+                } catch (TimeoutException ex) {
+                    event.respond(" Not Connected!");
+                }
+            }
+
         } else {
             String nickname = event.getUser().getNick();
             String message = removeFormattingAndColors(event.getMessage());
