@@ -155,8 +155,9 @@ public class TS3ChatBridgeListener implements TS3Listener{
         Integer joiningClientId = e.getClientId();
         ServerQueryInfo localInfo = null;
         ChannelInfo channelInfo = null;
+        
 
-        System.out.println("new client ID: " + joiningClientId.toString());
+        System.out.println("new client ID: " + joiningClientId.toString() + "Type: " + e.getClientType());
         try {
             Thread.sleep(500);
         } catch (InterruptedException ex) {
