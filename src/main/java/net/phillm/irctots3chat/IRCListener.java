@@ -1,4 +1,3 @@
-
 package net.phillm.irctots3chat;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
@@ -17,22 +16,21 @@ public class IRCListener extends ListenerAdapter {
         System.out.println("IRC onGenericMessage fired");
         if (event.getMessage().startsWith(".ping")) {
             event.respond("Pong!");
-            if (event.getMessage().startsWith(".ts3isconnected")) {
-                try {
-                    if (irctots3chat.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
-                        event.respond("Connected!");
-                    } else {
-                        event.respond(" Not Connected!");
-                    }
-                } catch (TimeoutException ex) {
+        } else if (event.getMessage().startsWith(".ts3isconnected")) {
+            try {
+                if (irctots3chat.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
+                    event.respond("Connected!");
+                } else {
                     event.respond(" Not Connected!");
                 }
+            } catch (TimeoutException ex) {
+                event.respond(" Not Connected!");
             }
 
         } else {
             String nickname = event.getUser().getNick();
             String message = removeFormattingAndColors(event.getMessage());
-            
+
             TS3Bot ts3Bot = irctots3chat.getTS3();
             if (ts3Bot != null) {
                 TS3ApiAsync api = ts3Bot.getAPI();
@@ -42,7 +40,7 @@ public class IRCListener extends ListenerAdapter {
                     System.out.println("Can't send to TS3: got null api ref.");
                 }
             } else {
-                 System.out.println("Can't send to TS3: bot not initalsed yet.");
+                System.out.println("Can't send to TS3: bot not initalsed yet.");
             }
             if (nickname.equalsIgnoreCase("skype")) {
                 System.out.println("nick " + nickname + " is skype. not sending msg");
