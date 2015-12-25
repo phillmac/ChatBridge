@@ -30,9 +30,13 @@ public class irctots3chat {
     public static Map<String, String> ircConfigMap = null;
 
     public static void main(String[] args) {
-            //new ChatBotExample();
-        //new TS3Bot();
-        try {
+        connectIRC();
+        connectTS3();
+
+    }
+    
+    public static void connectIRC(){
+                try {
             System.out.println("Chatbridge initalizing");
                                 //Configure what we want our bot to do
 
@@ -57,19 +61,26 @@ public class irctots3chat {
             //Create our bot with the configuration
             MultiBotManager<PircBotX> manager = new MultiBotManager();
             manager.addBot(configuration);
-                //PircBotX bot = new PircBotX(configuration);
-            //Connect to the server
-            //bot.startBot();
             manager.start();
             ircbotmanager = manager;
 
-            ts3 = new TS3Bot();
+            
 
+        } catch (Exception ex) {
+            Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    public static void connectTS3() {
+        try {
+            ts3 = new TS3Bot();
         } catch (Exception ex) {
             Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
+    
 
     public static TS3Bot getTS3() {
         return ts3;
