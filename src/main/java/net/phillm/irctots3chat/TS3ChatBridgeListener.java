@@ -158,50 +158,55 @@ public class TS3ChatBridgeListener implements TS3Listener{
         
 
         System.out.println("new client ID: " + joiningClientId.toString() + " Type: " + e.getClientType());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        List<Client> clientsList = null;
-        try {
-            clientsList = api.getClients().get();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        List<Integer> clientIdsList = new ArrayList();
-        if (clientsList != null) {
-            for (Client client : clientsList) {
-                clientIdsList.add(client.getId());
-            }
-        }
-        if (clientIdsList.contains(joiningClientId)) {
-            System.out.println("New client with ID: " + joiningClientId + " is valid");
+        if (e.getClientType() == 0) {
 
             try {
-                joiningClient = api.getClientInfo(joiningClientId).get();
-                localInfo = api.whoAmI().get();
-                channelInfo = api.getChannelInfo(localInfo.getChannelId()).get();
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (joiningClient != null && localInfo != null && channelInfo != null) {
-                String originalClientName = e.getClientNickname();
-                String clientName = ts3.nameTagStrip(originalClientName);
 
-                if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
-                    OutputChannel ircchannel;
-
-                    ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
-                    ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
-                    ts3.addChannelUid(joiningClientId, clientName);
-                } else {
-                    System.out.println("onClientJoin fired: Unrelated client");
+            List<Client> clientsList = null;
+            try {
+                clientsList = api.getClients().get();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            List<Integer> clientIdsList = new ArrayList();
+            if (clientsList != null) {
+                for (Client client : clientsList) {
+                    clientIdsList.add(client.getId());
                 }
             }
+            if (clientIdsList.contains(joiningClientId)) {
+                System.out.println("New client with ID: " + joiningClientId + " is valid");
+
+                try {
+                    joiningClient = api.getClientInfo(joiningClientId).get();
+                    localInfo = api.whoAmI().get();
+                    channelInfo = api.getChannelInfo(localInfo.getChannelId()).get();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if (joiningClient != null && localInfo != null && channelInfo != null) {
+                    String originalClientName = e.getClientNickname();
+                    String clientName = ts3.nameTagStrip(originalClientName);
+
+                    if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
+                        OutputChannel ircchannel;
+
+                        ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                        ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
+                        ts3.addChannelUid(joiningClientId, clientName);
+                    } else {
+                        System.out.println("onClientJoin fired: Unrelated client");
+                    }
+                }
+            } else {
+                System.out.println("New client with ID: " + joiningClientId + " left");
+            }
         } else {
-            System.out.println("New client with ID: " + joiningClientId + " left");
+           System.out.println("New client not of Type 0"); 
         }
     }
 
