@@ -203,7 +203,7 @@ public class TS3ChatBridgeListener implements TS3Listener{
                     }
                 }
             } else {
-                System.out.println("New client with ID: " + joiningClientId + " left");
+                System.out.println("New client with ID: " + joiningClientId + " left before delay finnished");
             }
         } else {
            System.out.println("New client not of Type 0"); 
