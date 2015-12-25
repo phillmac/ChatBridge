@@ -158,7 +158,7 @@ public class TS3ChatBridgeListener implements TS3Listener{
 
         System.out.println("new client ID: " + joiningClientId.toString());
         try {
-            Thread.sleep(400);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
         }
