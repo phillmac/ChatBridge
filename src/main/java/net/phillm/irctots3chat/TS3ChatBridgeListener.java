@@ -239,4 +239,9 @@ public class TS3ChatBridgeListener implements TS3Listener{
     public void onChannelPasswordChanged(ChannelPasswordChangedEvent e) {
 
     }
+
+    @Override
+    public void onPrivilegeKeyUsed(PrivilegeKeyUsedEvent pkue) {
+        
+    }
 }
