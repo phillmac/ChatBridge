@@ -83,5 +83,14 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src\main\java\net\phillm\irctots3chat\config</directory>
+                <includes>
+                    <include>ircconfig.yml</include>
+                    <include>ts3config.yml</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 </project>
