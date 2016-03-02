@@ -58,7 +58,7 @@ public class irctots3chat {
             Yaml ircConfigParser = new Yaml();
             if (ircConfigInput != null) {
                 ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
-                if (!ircConfigMap.get("host").equals("") || ircConfigMap.get("nick").equals("")) {
+                if (!ircConfigMap.get("host").equals("") || !ircConfigMap.get("nick").equals("")) {
                     Configuration configuration = new Configuration.Builder()
                             .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
                             .setServerHostname(ircConfigMap.get("host")) //
