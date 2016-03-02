@@ -37,27 +37,28 @@ public class TS3Bot {
         Yaml ts3ConfigParser = new Yaml();
         if (ts3ConfigInput != null) {
             final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
+            if (!ts3ConfigMap.get("host").equals("")) {
+                config.setHost(ts3ConfigMap.get("host"));
 
-            config.setHost(ts3ConfigMap.get("host"));
-
-            final TS3Query query = new TS3Query(config);
-            query.connect();
+                final TS3Query query = new TS3Query(config);
+                query.connect();
 
        // final TS3ApiAsync  api = query.getAsyncApi();
-            //Api = api;
-            api = query.getAsyncApi();
+                //Api = api;
+                api = query.getAsyncApi();
 
-            api.selectVirtualServerById(1);
+                api.selectVirtualServerById(1);
 
-            api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
+                api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
 
-            api.setNickname(ts3ConfigMap.get("nick"));
+                api.setNickname(ts3ConfigMap.get("nick"));
 
-            api.moveClient(api.whoAmI().get().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).get().getId());
-            api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
+                api.moveClient(api.whoAmI().get().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).get().getId());
+                api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
 
-            api.registerAllEvents();
-            api.addTS3Listeners(new TS3ChatBridgeListener(this));
+                api.registerAllEvents();
+                api.addTS3Listeners(new TS3ChatBridgeListener(this));
+            }
         }
     }
 
