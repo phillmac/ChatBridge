@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.util.HashMap;
+import static net.phillm.irctots3chat.irctots3chat.extractConfig;
 
 public class TS3Bot {
 
-    private  TS3ApiAsync  api = null;
+    private TS3ApiAsync api = null;
     private Map<Integer, String> uidsInChannel = new HashMap();
     public ArrayList<String> stripableTS3FormattingTags;
 
@@ -28,35 +29,35 @@ public class TS3Bot {
         try {
             ts3ConfigInput = new FileInputStream(new File("ts3config.yml"));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Could not find ts3config.yml. Please check that it exists.");
+            System.out.println("Could not find ts3config.yml");
+            System.out.println("Extracting ts3config.yml");
+            extractConfig("ts3config.yml", "ts3config.yml");
         }
 
         Yaml ts3ConfigParser = new Yaml();
         if (ts3ConfigInput != null) {
-        final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
+            final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
 
-        config.setHost(ts3ConfigMap.get("host"));
+            config.setHost(ts3ConfigMap.get("host"));
 
-        final TS3Query query = new TS3Query(config);
-        query.connect();
+            final TS3Query query = new TS3Query(config);
+            query.connect();
 
        // final TS3ApiAsync  api = query.getAsyncApi();
-        //Api = api;
-        
-        api = query.getAsyncApi();
+            //Api = api;
+            api = query.getAsyncApi();
 
-        api.selectVirtualServerById(1);
+            api.selectVirtualServerById(1);
 
-        api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
+            api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
 
-        api.setNickname(ts3ConfigMap.get("nick"));
+            api.setNickname(ts3ConfigMap.get("nick"));
 
-        api.moveClient(api.whoAmI().get().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).get().getId());
-        api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
+            api.moveClient(api.whoAmI().get().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).get().getId());
+            api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
 
-        api.registerAllEvents();
-        api.addTS3Listeners(new TS3ChatBridgeListener(this));
+            api.registerAllEvents();
+            api.addTS3Listeners(new TS3ChatBridgeListener(this));
         }
     }
 
@@ -71,7 +72,7 @@ public class TS3Bot {
         return api;
     }
 
-    public  String nameTagStrip(String originalName) {
+    public String nameTagStrip(String originalName) {
 
         String nameTagStriped;
         int beginStrip;
@@ -92,7 +93,7 @@ public class TS3Bot {
         }
         return nameTagStriped;
     }
-    
+
     public Map<Integer, String> getuidsInChannel() {
         return uidsInChannel;
     }
@@ -100,11 +101,12 @@ public class TS3Bot {
     public void setuidsInChannel(Map<Integer, String> Uids) {
         uidsInChannel = Uids;
     }
-    public void addChannelUid(Integer ClientID, String ClientNick){
+
+    public void addChannelUid(Integer ClientID, String ClientNick) {
         uidsInChannel.put(ClientID, ClientNick);
     }
-    
-    public void removeChannelUid(Integer ClientID){
+
+    public void removeChannelUid(Integer ClientID) {
         uidsInChannel.remove(ClientID);
     }
 }
