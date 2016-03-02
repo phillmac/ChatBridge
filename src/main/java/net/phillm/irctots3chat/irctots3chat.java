@@ -58,18 +58,19 @@ public class irctots3chat {
             Yaml ircConfigParser = new Yaml();
             if (ircConfigInput != null) {
                 ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
+                if (!ircConfigMap.get("host").equals("") || ircConfigMap.get("nick").equals("")) {
+                    Configuration configuration = new Configuration.Builder()
+                            .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
+                            .setServerHostname(ircConfigMap.get("host")) //
+                            .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
+                            .addListener(new IRCListener()) //Add our listener that will be called on Events
+                            .buildConfiguration();
 
-                Configuration configuration = new Configuration.Builder()
-                        .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
-                        .setServerHostname(ircConfigMap.get("host")) //
-                        .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
-                        .addListener(new IRCListener()) //Add our listener that will be called on Events
-                        .buildConfiguration();
-
-                //Create our bot with the configuration
-                ircbotmanager = new MultiBotManager();
-                ircbotmanager.addBot(configuration);
-                ircbotmanager.start();
+                    //Create our bot with the configuration
+                    ircbotmanager = new MultiBotManager();
+                    ircbotmanager.addBot(configuration);
+                    ircbotmanager.start();
+                }
             }
 
         } catch (Exception ex) {
