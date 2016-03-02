@@ -38,8 +38,8 @@ public class irctots3chat {
     }
 
     /**
-     * Loads configuration from irconfig.yml and attempts to
-     * connect to the specified server.
+     * Loads configuration from irconfig.yml and attempts to connect to the
+     * specified server.
      */
     public static void connectIRC() {
         try {
@@ -53,24 +53,24 @@ public class irctots3chat {
                 System.out.println("Could not find ircconfig.yml");
                 System.out.println("Extracting ircconfig.yml");
                 extractConfig("ircconfig.ym", "ircconfig.yml");
-                System.exit(0);
             }
 
             Yaml ircConfigParser = new Yaml();
-            ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
+            if (ircConfigInput != null) {
+                ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
 
-            Configuration configuration = new Configuration.Builder()
-                    .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
-                    .setServerHostname(ircConfigMap.get("host")) //
-                    .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
-                    .addListener(new IRCListener()) //Add our listener that will be called on Events
-                    .buildConfiguration();
+                Configuration configuration = new Configuration.Builder()
+                        .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
+                        .setServerHostname(ircConfigMap.get("host")) //
+                        .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
+                        .addListener(new IRCListener()) //Add our listener that will be called on Events
+                        .buildConfiguration();
 
-            //Create our bot with the configuration
-            MultiBotManager<PircBotX> manager = new MultiBotManager();
-            manager.addBot(configuration);
-            manager.start();
-            ircbotmanager = manager;
+                //Create our bot with the configuration
+                ircbotmanager = new MultiBotManager();
+                ircbotmanager.addBot(configuration);
+                ircbotmanager.start();
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
@@ -99,16 +99,22 @@ public class irctots3chat {
 
     }
 
+    /**
+     * Gets a reference to the application's static MultiBotManager
+     * @return MultiBotManager
+     */
     public static MultiBotManager<PircBotX> getIRCManger() {
         return ircbotmanager;
 
     }
 
     /**
-     *Run a shell command and return the resulting text output.
-     * @param command Shell command to run, first array element is the command name, following
-     * elements are the parameters.
-     * @return The resulting text output of the command, or the string "Error" on failure.
+     * Run a shell command and return the resulting text output.
+     *
+     * @param command Shell command to run, first array element is the command
+     * name, following elements are the parameters.
+     * @return The resulting text output of the command, or the string "Error"
+     * on failure.
      */
     public static String executeCommand(String[] command) {
 
@@ -129,7 +135,7 @@ public class irctots3chat {
         } catch (IOException | InterruptedException e) {
             System.out.println("Error while executing command");
             return "Error";
-           
+
         }
 
         return output.toString();
@@ -137,7 +143,8 @@ public class irctots3chat {
     }
 
     /**
-     *Extract the specified configuration file.
+     * Extract the specified configuration file.
+     *
      * @param internalPath Internal file name.
      * @param fileName external file name to extract to.
      */
