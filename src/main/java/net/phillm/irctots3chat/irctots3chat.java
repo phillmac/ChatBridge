@@ -79,7 +79,8 @@ public class irctots3chat {
     }
 
     /**
-     *
+     * Read ts3config.yml and attempt to create a connection to the specified
+     * server
      */
     public static void connectTS3() {
         try {
@@ -92,7 +93,7 @@ public class irctots3chat {
 
     /**
      *
-     * @return
+     * @return Application's TS3Bot
      */
     public static TS3Bot getTS3() {
         return ts3;
@@ -101,7 +102,8 @@ public class irctots3chat {
 
     /**
      * Gets a reference to the application's static MultiBotManager
-     * @return MultiBotManager
+     *
+     * @return Application's MultiBotManager
      */
     public static MultiBotManager<PircBotX> getIRCManger() {
         return ircbotmanager;
