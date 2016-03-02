@@ -70,6 +70,8 @@ public class irctots3chat {
                     ircbotmanager = new MultiBotManager();
                     ircbotmanager.addBot(configuration);
                     ircbotmanager.start();
+                } else {
+                     System.out.println("Check that the host and nick is set correctly in ircconfig.yml");
                 }
             }
 
