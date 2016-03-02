@@ -43,7 +43,7 @@ public class TS3Bot {
                 final TS3Query query = new TS3Query(config);
                 query.connect();
 
-       // final TS3ApiAsync  api = query.getAsyncApi();
+                // final TS3ApiAsync  api = query.getAsyncApi();
                 //Api = api;
                 api = query.getAsyncApi();
 
@@ -58,6 +58,8 @@ public class TS3Bot {
 
                 api.registerAllEvents();
                 api.addTS3Listeners(new TS3ChatBridgeListener(this));
+            } else {
+                System.out.println("Check that the host  is set correctly in ts3config.yml");
             }
         }
     }
