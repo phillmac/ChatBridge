@@ -52,7 +52,7 @@ public class irctots3chat {
             } catch (FileNotFoundException e) {
                 System.out.println("Could not find ircconfig.yml");
                 System.out.println("Extracting ircconfig.yml");
-                extractConfig("ircconfig.ym", "ircconfig.yml");
+                extractConfig("ircconfig.yml", "ircconfig.yml");
             }
 
             Yaml ircConfigParser = new Yaml();
