@@ -38,7 +38,7 @@ public class TS3ChatListener implements TS3Listener {
                         case "!ping":
                             api.sendChannelMessage("pong");
                             break;
-                        case "!ircconect":
+                        case "!ircconnect":
                             irctots3chat.connectIRC();
                             break;
                         case "!findip":
