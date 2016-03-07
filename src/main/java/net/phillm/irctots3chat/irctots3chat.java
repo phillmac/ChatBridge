@@ -64,7 +64,7 @@ public class irctots3chat {
                     }
                     configuration.addServer(ircConfigMap.get("host")); //
                     if (!ircConfigMap.get("channel").equals("")) {
-                        configuration.addAutoJoinChannel(ircConfigMap.get("channel"), ""); //
+                        configuration.addAutoJoinChannel(ircConfigMap.get("channel")); //
                     }
                     configuration.addListener(new IRCListener()); //Add our listener that will be called on Events
 
