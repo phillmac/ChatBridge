@@ -59,10 +59,10 @@ public class irctots3chat {
                 ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
                 if (!ircConfigMap.get("host").equals("")){
                     Builder configuration = new Builder();
+                    configuration.addServer(ircConfigMap.get("host")); //
                     if(!ircConfigMap.get("nick").equals("")) {
                     configuration.setName(ircConfigMap.get("nick")); //Set the nick of the bot.
                     }
-                    configuration.addServer(ircConfigMap.get("host")); //
                     if (!ircConfigMap.get("channel").equals("")) {
                         configuration.addAutoJoinChannel(ircConfigMap.get("channel")); //
                     }
