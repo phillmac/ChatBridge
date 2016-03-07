@@ -42,7 +42,7 @@ public class irctots3chat {
      */
     public static void connectIRC() {
         try {
-            System.out.println("Chatbridge version 0.1.0 initalizing");
+            System.out.println("Chatbridge version 0.1.0.1 initalizing");
             //Configure what we want our bot to do
 
             InputStream ircConfigInput = null;
