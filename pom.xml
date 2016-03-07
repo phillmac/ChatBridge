@@ -32,12 +32,6 @@
         -->
     </repositories>
     <dependencies>
-        
-        <dependency>
-            <groupId>org.pircbotx</groupId>
-            <artifactId>pircbotx</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>
         <!--
         <dependency>
             <groupId>com.cnaude.pircbotx</groupId>
@@ -59,6 +53,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pircbotx</groupId>
+            <artifactId>pircbotx</artifactId>
+            <version>2.1</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <build>
