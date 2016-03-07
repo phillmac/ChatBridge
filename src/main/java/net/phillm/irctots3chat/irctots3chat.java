@@ -28,7 +28,7 @@ import org.yaml.snakeyaml.Yaml;
 public class irctots3chat {
 
     private static TS3Bot ts3;
-    private static MultiBotManager<PircBotX> ircbotmanager;
+    private static MultiBotManager ircbotmanager;
     public static Map<String, String> ircConfigMap = null;
 
     public static void main(String[] args) {
@@ -61,7 +61,7 @@ public class irctots3chat {
                 if (!ircConfigMap.get("host").equals("") || !ircConfigMap.get("nick").equals("")) {
                     Configuration configuration = new Configuration.Builder()
                             .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
-                            .setServerHostname(ircConfigMap.get("host")) //
+                            .addServer(ircConfigMap.get("host")) //
                             .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
                             .addListener(new IRCListener()) //Add our listener that will be called on Events
                             .buildConfiguration();
@@ -108,7 +108,7 @@ public class irctots3chat {
      *
      * @return Application's MultiBotManager
      */
-    public static MultiBotManager<PircBotX> getIRCManger() {
+    public static MultiBotManager getIRCManger() {
         return ircbotmanager;
 
     }
