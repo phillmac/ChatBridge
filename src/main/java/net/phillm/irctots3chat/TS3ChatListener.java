@@ -70,8 +70,9 @@ public class TS3ChatListener implements TS3Listener {
                             OutputChannel ircChannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
                             StringBuilder messageBuilder = new StringBuilder();
                             messageBuilder.append(senderName);
-                            messageBuilder.append(" ");
                             messageBuilder.append(Colors.lookup(irctots3chat.ircConfigMap.get("messageseperatorcolor")));
+                            messageBuilder.append(irctots3chat.ircConfigMap.get("messageseperator"));
+                            messageBuilder.append(Colors.lookup(irctots3chat.ircConfigMap.get("messagecolor")));
                             messageBuilder.append(ts3.stripTS3FormattingTags(e.getMessage()));
                             
                             
