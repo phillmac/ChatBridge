@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.pircbotx.Configuration;
+import org.pircbotx.Configuration.Builder;
 import org.pircbotx.MultiBotManager;
 import org.yaml.snakeyaml.Yaml;
 
@@ -57,20 +57,23 @@ public class irctots3chat {
             Yaml ircConfigParser = new Yaml();
             if (ircConfigInput != null) {
                 ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
-                if (!ircConfigMap.get("host").equals("") || !ircConfigMap.get("nick").equals("")) {
-                    Configuration configuration = new Configuration.Builder()
-                            .setName(ircConfigMap.get("nick")) //Set the nick of the bot.
-                            .addServer(ircConfigMap.get("host")) //
-                            .addAutoJoinChannel(ircConfigMap.get("channel"), "") //
-                            .addListener(new IRCListener()) //Add our listener that will be called on Events
-                            .buildConfiguration();
+                if (!ircConfigMap.get("host").equals("")){
+                    Builder configuration = new Builder();
+                    if(!ircConfigMap.get("nick").equals("")) {
+                    configuration.setName(ircConfigMap.get("nick")); //Set the nick of the bot.
+                    }
+                    configuration.addServer(ircConfigMap.get("host")); //
+                    if (!ircConfigMap.get("channel").equals("")) {
+                        configuration.addAutoJoinChannel(ircConfigMap.get("channel"), ""); //
+                    }
+                    configuration.addListener(new IRCListener()); //Add our listener that will be called on Events
 
                     //Create our bot with the configuration
                     ircbotmanager = new MultiBotManager();
-                    ircbotmanager.addBot(configuration);
+                    ircbotmanager.addBot(configuration.buildConfiguration());
                     ircbotmanager.start();
                 } else {
-                     System.out.println("Check that the host and nick is set correctly in ircconfig.yml");
+                    System.out.println("Check that the host is set correctly in ircconfig.yml");
                 }
             }
 
