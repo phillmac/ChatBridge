@@ -1,3 +1,5 @@
 host: ""
 channel: ""
 nick: ""
+messageseperator: ""
+messagecolor: ""
