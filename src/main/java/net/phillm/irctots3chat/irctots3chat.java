@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
-import org.pircbotx.PircBotX;
 import org.yaml.snakeyaml.Yaml;
 
 /**
