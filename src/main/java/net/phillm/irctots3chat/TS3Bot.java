@@ -57,7 +57,7 @@ public class TS3Bot {
                 api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
 
                 api.registerAllEvents();
-                api.addTS3Listeners(new TS3ChatBridgeListener(this));
+                api.addTS3Listeners(new TS3ChatListener(this));
             } else {
                 System.out.println("Check that the host  is set correctly in ts3config.yml");
             }
