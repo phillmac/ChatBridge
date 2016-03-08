@@ -1,4 +1,4 @@
-package net.phillm.irctots3chat;
+package net.phillm.chatbridge;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
@@ -39,7 +39,7 @@ public class TS3ChatListener implements TS3Listener {
                             api.sendChannelMessage("pong");
                             break;
                         case "!ircconnect":
-                            irctots3chat.connectIRC();
+                            ChatBridge.connectIRC();
                             break;
                         case "!findip":
                             List<Client> clientsList;
@@ -63,21 +63,21 @@ public class TS3ChatListener implements TS3Listener {
                             break;
 
                         case "!getircnick":
-                            api.sendChannelMessage("IRC bot nick is " + irctots3chat.getIRCManger().getBots().first().getNick());
+                            api.sendChannelMessage("IRC bot nick is " + ChatBridge.getIRCManger().getBots().first().getNick());
                             break;
                         default:
 
-                            OutputChannel ircChannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                            OutputChannel ircChannel = ChatBridge.getIRCManger().getBots().first().getUserChannelDao().getChannel(ChatBridge.ircConfigMap.get("channel")).send();
                             StringBuilder messageBuilder = new StringBuilder();
                             messageBuilder.append(senderName);
-                            messageBuilder.append(Colors.lookup(irctots3chat.ircConfigMap.get("messageseperatorcolor")));
-                            messageBuilder.append(irctots3chat.ircConfigMap.get("messageseperator"));
-                            messageBuilder.append(Colors.lookup(irctots3chat.ircConfigMap.get("messagecolor")));
+                            messageBuilder.append(Colors.lookup(ChatBridge.ircConfigMap.get("messageseperatorcolor")));
+                            messageBuilder.append(ChatBridge.ircConfigMap.get("messageseperator"));
+                            messageBuilder.append(Colors.lookup(ChatBridge.ircConfigMap.get("messagecolor")));
                             messageBuilder.append(ts3.stripTS3FormattingTags(e.getMessage()));
                             
                             
                             ircChannel.message(messageBuilder.toString());
-                            irctots3chat.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
+                            ChatBridge.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
 
                             break;
                     }
@@ -112,7 +112,7 @@ public class TS3ChatListener implements TS3Listener {
             String clientName = ts3.nameTagStrip(originalClientName);
 
             OutputChannel ircchannel;
-            ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+            ircchannel = ChatBridge.getIRCManger().getBots().first().getUserChannelDao().getChannel(ChatBridge.ircConfigMap.get("channel")).send();
 
             if ((movingClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
                 ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
@@ -144,7 +144,7 @@ public class TS3ChatListener implements TS3Listener {
 
         if (ts3.getuidsInChannel().keySet().contains(leavingClientId)) {
             OutputChannel ircchannel;
-            ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+            ircchannel = ChatBridge.getIRCManger().getBots().first().getUserChannelDao().getChannel(ChatBridge.ircConfigMap.get("channel")).send();
             ircchannel.message(ts3.getuidsInChannel().get(leavingClientId) + " Left the channel");
             ts3.removeChannelUid(leavingClientId);
 
@@ -200,7 +200,7 @@ public class TS3ChatListener implements TS3Listener {
                     if ((joiningClient.getChannelId() == localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
                         OutputChannel ircchannel;
 
-                        ircchannel = irctots3chat.getIRCManger().getBots().first().getUserChannelDao().getChannel(irctots3chat.ircConfigMap.get("channel")).send();
+                        ircchannel = ChatBridge.getIRCManger().getBots().first().getUserChannelDao().getChannel(ChatBridge.ircConfigMap.get("channel")).send();
                         ircchannel.message(clientName + " Joined Channel " + channelInfo.getName());
                         ts3.addChannelUid(joiningClientId, clientName);
                     } else {

@@ -1,4 +1,4 @@
-package net.phillm.irctots3chat;
+package net.phillm.chatbridge;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public class IRCListener extends ListenerAdapter {
                 event.respond("Pong!");
                 break;
             case ".connectts3":
-                irctots3chat.connectTS3();
+                ChatBridge.connectTS3();
                 break;
             case ".ts3isconnected":
                 try {
-                    if (irctots3chat.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
+                    if (ChatBridge.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
                         event.respond("Connected!");
                     } else {
                         event.respond(" Not Connected!");
@@ -40,7 +40,7 @@ public class IRCListener extends ListenerAdapter {
                 String nickname = event.getUser().getNick();
                 String message = removeFormattingAndColors(event.getMessage());
 
-                TS3Bot ts3Bot = irctots3chat.getTS3();
+                TS3Bot ts3Bot = ChatBridge.getTS3();
                 if (ts3Bot != null) {
                     TS3ApiAsync api = ts3Bot.getAPI();
                     if (api != null) {
@@ -54,7 +54,7 @@ public class IRCListener extends ListenerAdapter {
                 if (nickname.equalsIgnoreCase("skype")) {
                     System.out.println("nick " + nickname + " is skype. not sending msg");
                 } else {
-                    String sendToSkypeResult = irctots3chat.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
+                    String sendToSkypeResult = ChatBridge.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
                     System.out.println("Got restult: " + sendToSkypeResult);
                     if (sendToSkypeResult.equalsIgnoreCase("OK")) {
                         System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ": " + message + "'");

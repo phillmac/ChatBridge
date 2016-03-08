@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.phillm.irctots3chat;
+package net.phillm.chatbridge;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +24,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @author Phillip
  */
-public class irctots3chat {
+public class ChatBridge {
 
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
@@ -78,7 +78,7 @@ public class irctots3chat {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -91,7 +91,7 @@ public class irctots3chat {
         try {
             ts3 = new TS3Bot();
         } catch (Exception ex) {
-            Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -160,12 +160,12 @@ public class irctots3chat {
         int bytesRead = 0;
         try {
             output = new FileOutputStream(fileName);
-            try (InputStream input = irctots3chat.class.getClassLoader().getResourceAsStream(internalPath)) {
+            try (InputStream input = ChatBridge.class.getClassLoader().getResourceAsStream(internalPath)) {
                 byte[] buffer = new byte[4096];
                 try {
                     bytesRead = input.read(buffer);
                 } catch (IOException ex) {
-                    Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 while (bytesRead != -1) {
                     output.write(buffer, 0, bytesRead);
@@ -174,16 +174,16 @@ public class irctots3chat {
                 output.close();
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (output != null) {
                     output.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(irctots3chat.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

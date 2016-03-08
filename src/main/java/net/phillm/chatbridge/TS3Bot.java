@@ -1,4 +1,4 @@
-package net.phillm.irctots3chat;
+package net.phillm.chatbridge;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.util.HashMap;
-import static net.phillm.irctots3chat.irctots3chat.extractConfig;
+import static net.phillm.chatbridge.ChatBridge.extractConfig;
 
 public class TS3Bot {
 
