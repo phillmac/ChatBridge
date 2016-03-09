@@ -68,7 +68,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.phillm.chatbridge.chatbridge</mainClass>
+                            <mainClass>net.phillm.chatbridge.ChatBridge</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
