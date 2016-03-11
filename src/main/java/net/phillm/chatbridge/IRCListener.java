@@ -27,7 +27,7 @@ public class IRCListener extends ListenerAdapter {
             case ".ts3isconnected":
                 try {
                     if (ChatBridge.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
-                        event.respond("Connected!");
+                        event.respond(" Connected!");
                     } else {
                         event.respond(" Not Connected!");
                     }
