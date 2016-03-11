@@ -66,6 +66,9 @@ public class ChatBridge {
                     if (!ircConfigMap.get("channel").equals("")) {
                         configuration.addAutoJoinChannel(ircConfigMap.get("channel")); //
                     }
+                    if (!ircConfigMap.get("autoreconnect").equals("")) {
+                    configuration.setAutoReconnect(ircConfigMap.get("autoreconnect").equals("true"));
+                    }
                     configuration.addListener(new IRCListener()); //Add our listener that will be called on Events
 
                     //Create our bot with the configuration
