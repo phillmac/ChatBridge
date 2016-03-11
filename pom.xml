@@ -88,7 +88,7 @@
         </plugins>
         <resources>
             <resource>
-                <directory>src\main\java\net\phillm\irctots3chat\config</directory>
+                <directory>src\main\java\net\phillm\chatbridge\config</directory>
                 <includes>
                     <include>ircconfig.yml</include>
                     <include>ts3config.yml</include>
