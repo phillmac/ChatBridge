@@ -1,6 +1,7 @@
 host: ""
 channel: ""
 nick: ""
+autoreconnect: ""
 messageseperator: ""
 messageseperatorcolor: ""
 messagecolor: ""
