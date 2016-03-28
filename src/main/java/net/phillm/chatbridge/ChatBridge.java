@@ -19,18 +19,21 @@ import java.util.logging.Logger;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.MultiBotManager;
 import org.yaml.snakeyaml.Yaml;
+import ro.fortsoft.pf4j.Plugin;
+import ro.fortsoft.pf4j.PluginWrapper;
+
 
 /**
  *
  * @author Phillip
  */
-public class ChatBridge {
+public class ChatBridge extends Plugin {
 
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
     public static Map<String, String> ircConfigMap = null;
 
-    public static void main(String[] args) {
+    public static void start(String[] args) {
         connectIRC();
         connectTS3();
 
@@ -189,6 +192,10 @@ public class ChatBridge {
                 Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public ChatBridge(PluginWrapper wrapper) {
+        super(wrapper);
     }
 
 }
