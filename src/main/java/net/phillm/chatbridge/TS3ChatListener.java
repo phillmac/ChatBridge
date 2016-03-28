@@ -77,7 +77,7 @@ public class TS3ChatListener implements TS3Listener {
                             
                             
                             ircChannel.message(messageBuilder.toString());
-                            ChatBridge.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
+                            //ChatBridge.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
 
                             break;
                     }
