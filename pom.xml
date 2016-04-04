@@ -11,7 +11,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <plugin.id>chatbridge</plugin.id>
         <plugin.class>net.phillm.chatbridge.ChatBridge</plugin.class>
-        <plugin.version>1.0.2-SNAPSHOT</plugin.version>
+        <plugin.version>1.0.2</plugin.version>
         <plugin.provider>Phillip Mackintosh</plugin.provider>
         <plugin.dependencies />
     </properties>
