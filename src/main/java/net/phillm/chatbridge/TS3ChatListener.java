@@ -15,12 +15,12 @@ import org.pircbotx.output.OutputChannel;
 public class TS3ChatListener implements TS3Listener {
 
     private final TS3Bot ts3;
-    private final TS3ApiAsync api;
+    private final TS3ApiAsync ts3api;
 
     public TS3ChatListener(TS3Bot TS3) {
 
         ts3 = TS3;
-        api = TS3.getAPI();
+        ts3api = TS3.getAPI();
     }
 
     @Override
@@ -30,13 +30,13 @@ public class TS3ChatListener implements TS3Listener {
             String senderName = ts3.nameTagStrip(e.getInvokerName());
 
             try {
-                if (!api.whoAmI().get().getNickname().equals(e.getInvokerName())) {
+                if (!ts3api.whoAmI().get().getNickname().equals(e.getInvokerName())) {
 
                     ArrayList<String> msgContents = new ArrayList(Arrays.asList(e.getMessage().split(" ")));
 
                     switch (msgContents.get(0)) {
                         case "!ping":
-                            api.sendChannelMessage("pong");
+                            ts3api.sendChannelMessage("pong");
                             break;
                         case "!ircconnect":
                             ChatBridge.connectIRC();
@@ -45,11 +45,11 @@ public class TS3ChatListener implements TS3Listener {
                             List<Client> clientsList;
                             Boolean ipFound = false;
                             try {
-                                clientsList = api.getClients().get();
+                                clientsList = ts3api.getClients().get();
 
                                 for (Client client : clientsList) {
-                                    if (api.getClientInfo(client.getId()).get().getIp().equals(msgContents.get(1))) {
-                                        api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
+                                    if (ts3api.getClientInfo(client.getId()).get().getIp().equals(msgContents.get(1))) {
+                                        ts3api.sendChannelMessage("Found client with ip " + msgContents.get(1) + " : " + client.getNickname());
                                         ipFound = true;
                                         break;
                                     }
@@ -58,12 +58,12 @@ public class TS3ChatListener implements TS3Listener {
                                 Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             if (!ipFound) {
-                                api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
+                                ts3api.sendChannelMessage("Couldn't find a client with ip " + msgContents.get(1));
                             }
                             break;
 
                         case "!getircnick":
-                            api.sendChannelMessage("IRC bot nick is " + ChatBridge.getIRCManger().getBots().first().getNick());
+                            ts3api.sendChannelMessage("IRC bot nick is " + ChatBridge.getIRCManger().getBots().first().getNick());
                             break;
                         default:
 
@@ -77,7 +77,7 @@ public class TS3ChatListener implements TS3Listener {
                             
                             
                             ircChannel.message(messageBuilder.toString());
-                            //ChatBridge.executeCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
+                            //ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
 
                             break;
                     }
@@ -101,9 +101,9 @@ public class TS3ChatListener implements TS3Listener {
         ChannelInfo channelInfo = null;
 
         try {
-            movingClient = api.getClientInfo(movingClientId).get();
-            localInfo = api.whoAmI().get();
-            channelInfo = api.getChannelInfo(localInfo.getChannelId()).get();
+            movingClient = ts3api.getClientInfo(movingClientId).get();
+            localInfo = ts3api.whoAmI().get();
+            channelInfo = ts3api.getChannelInfo(localInfo.getChannelId()).get();
         } catch (InterruptedException ex) {
             Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,7 +120,7 @@ public class TS3ChatListener implements TS3Listener {
             } else if ((movingClient.getChannelId() != localInfo.getChannelId()) && (!localInfo.getNickname().equals(originalClientName))) {
                 if (ts3.getuidsInChannel().keySet().contains(movingClientId)) {
                     try {
-                        ircchannel.message(clientName + " Moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).get().getName());
+                        ircchannel.message(clientName + " Moved to Channel " + ts3api.getChannelInfo(movingClient.getChannelId()).get().getName());
                     } catch (InterruptedException ex) {
                         Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -130,7 +130,7 @@ public class TS3ChatListener implements TS3Listener {
                 }
             } else if (localInfo.getNickname().equals(originalClientName)) {
                 try {
-                    ircchannel.message(clientName + " IRC Bot moved to Channel " + api.getChannelInfo(movingClient.getChannelId()).get().getName());
+                    ircchannel.message(clientName + " IRC Bot moved to Channel " + ts3api.getChannelInfo(movingClient.getChannelId()).get().getName());
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -173,7 +173,7 @@ public class TS3ChatListener implements TS3Listener {
 
             List<Client> clientsList = null;
             try {
-                clientsList = api.getClients().get();
+                clientsList = ts3api.getClients().get();
             } catch (InterruptedException ex) {
                 Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -187,9 +187,9 @@ public class TS3ChatListener implements TS3Listener {
                 System.out.println("New client with ID: " + joiningClientId + " is valid");
 
                 try {
-                    joiningClient = api.getClientInfo(joiningClientId).get();
-                    localInfo = api.whoAmI().get();
-                    channelInfo = api.getChannelInfo(localInfo.getChannelId()).get();
+                    joiningClient = ts3api.getClientInfo(joiningClientId).get();
+                    localInfo = ts3api.whoAmI().get();
+                    channelInfo = ts3api.getChannelInfo(localInfo.getChannelId()).get();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TS3Bot.class.getName()).log(Level.SEVERE, null, ex);
                 }
