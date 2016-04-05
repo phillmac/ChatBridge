@@ -19,21 +19,23 @@ import java.util.logging.Logger;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.MultiBotManager;
 import org.yaml.snakeyaml.Yaml;
-import ro.fortsoft.pf4j.Plugin;
 import ro.fortsoft.pf4j.PluginWrapper;
-
+import net.phillm.jc2.JC2Plugin;
 
 /**
  *
  * @author Phillip
  */
-public class ChatBridge extends Plugin {
+public class ChatBridge extends JC2Plugin {
 
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
     public static Map<String, String> ircConfigMap = null;
+    private static final String version = "1.0.2";
 
     public static void start(String[] args) {
+        System.out.println("Chatbridge version " + version + "initalizing");
+        
         connectIRC();
         connectTS3();
 
@@ -45,7 +47,7 @@ public class ChatBridge extends Plugin {
      */
     public static void connectIRC() {
         try {
-            System.out.println("Chatbridge version 0.1.0.1 initalizing");
+            
             //Configure what we want our bot to do
 
             InputStream ircConfigInput = null;
@@ -129,7 +131,7 @@ public class ChatBridge extends Plugin {
      * @return The resulting text output of the command, or the string "Error"
      * on failure.
      */
-    public static String executeCommand(String[] command) {
+    public static String executeShellCommand(String[] command) {
 
         StringBuilder output = new StringBuilder();
 
@@ -196,6 +198,11 @@ public class ChatBridge extends Plugin {
 
     public ChatBridge(PluginWrapper wrapper) {
         super(wrapper);
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
     }
 
 }
