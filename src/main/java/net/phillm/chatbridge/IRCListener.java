@@ -54,7 +54,7 @@ public class IRCListener extends ListenerAdapter {
                 if (nickname.equalsIgnoreCase("skype")) {
                     System.out.println("nick " + nickname + " is skype. not sending msg");
                 } //else {
-                    //String sendToSkypeResult = ChatBridge.executeCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
+                    //String sendToSkypeResult = ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
                     //System.out.println("Got restult: " + sendToSkypeResult);
                     //if (sendToSkypeResult.equalsIgnoreCase("OK")) {
                         //System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ": " + message + "'");
