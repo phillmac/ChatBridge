@@ -69,7 +69,13 @@
             <groupId>ro.fortsoft.pf4j</groupId>
             <artifactId>pf4j</artifactId>
             <version>0.12.0</version>
-        </dependency> 
+        </dependency>
+        <dependency>
+            <groupId>net.phillm</groupId>
+            <artifactId>javaconsole</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
