@@ -28,19 +28,20 @@ import ro.fortsoft.pf4j.Extension;
  * @author Phillip
  */
 @Extension
-public  class ChatBridge extends JC2Plugin {
+public class ChatBridge extends JC2Plugin {
 
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
     public static Map<String, String> ircConfigMap = null;
     private static final String version = "1.0.2";
 
-    public static void start(String[] args) {
+    @Override
+    public Boolean init() {
         System.out.println("Chatbridge version " + version + "initalizing");
-        
+
         connectIRC();
         connectTS3();
-
+        return true;
     }
 
     /**
@@ -49,9 +50,8 @@ public  class ChatBridge extends JC2Plugin {
      */
     public static void connectIRC() {
         try {
-            
-            //Configure what we want our bot to do
 
+            //Configure what we want our bot to do
             InputStream ircConfigInput = null;
             try {
                 ircConfigInput = new FileInputStream(new File("ircconfig.yml"));
@@ -64,17 +64,17 @@ public  class ChatBridge extends JC2Plugin {
             Yaml ircConfigParser = new Yaml();
             if (ircConfigInput != null) {
                 ircConfigMap = (Map<String, String>) ircConfigParser.load(ircConfigInput);
-                if (!ircConfigMap.get("host").equals("")){
+                if (!ircConfigMap.get("host").equals("")) {
                     Builder configuration = new Builder();
                     configuration.addServer(ircConfigMap.get("host")); //
-                    if(!ircConfigMap.get("nick").equals("")) {
-                    configuration.setName(ircConfigMap.get("nick")); //Set the nick of the bot.
+                    if (!ircConfigMap.get("nick").equals("")) {
+                        configuration.setName(ircConfigMap.get("nick")); //Set the nick of the bot.
                     }
                     if (!ircConfigMap.get("channel").equals("")) {
                         configuration.addAutoJoinChannel(ircConfigMap.get("channel")); //
                     }
                     if (!ircConfigMap.get("autoreconnect").equals("")) {
-                    configuration.setAutoReconnect(ircConfigMap.get("autoreconnect").equals("true"));
+                        configuration.setAutoReconnect(ircConfigMap.get("autoreconnect").equals("true"));
                     }
                     configuration.addListener(new IRCListener()); //Add our listener that will be called on Events
 
