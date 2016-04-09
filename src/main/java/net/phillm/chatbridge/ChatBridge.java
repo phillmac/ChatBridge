@@ -36,12 +36,12 @@ public class ChatBridge extends JC2Plugin {
     private static final String version = "1.0.2";
 
     @Override
-    public Boolean init() {
+    public void start() {
         System.out.println("Chatbridge version " + version + "initalizing");
 
         connectIRC();
         connectTS3();
-        return true;
+        
     }
 
     /**
