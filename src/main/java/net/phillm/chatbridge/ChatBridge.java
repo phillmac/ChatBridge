@@ -21,12 +21,14 @@ import org.pircbotx.MultiBotManager;
 import org.yaml.snakeyaml.Yaml;
 import ro.fortsoft.pf4j.PluginWrapper;
 import net.phillm.jc2.JC2Plugin;
+import ro.fortsoft.pf4j.Extension;
 
 /**
  *
  * @author Phillip
  */
-public class ChatBridge extends JC2Plugin {
+@Extension
+public  class ChatBridge extends JC2Plugin {
 
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
