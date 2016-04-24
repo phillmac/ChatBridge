@@ -40,7 +40,10 @@ public class TS3Bot {
             if (!ts3ConfigMap.get("host").equals("")) {
                 config.setHost(ts3ConfigMap.get("host"));
                 if (!ts3ConfigMap.get("host").equals("")) {
-                    config.setQueryPort(Integer.parseInt(ts3ConfigMap.get("port")));
+                    Integer portNo = Integer.parseInt(ts3ConfigMap.get("port"));
+                    config.setQueryPort(portNo);
+                    System.out.println("TS3 port: " + portNo.toString());
+                    
                 } else {
                     config.setQueryPort(10011);
                 }
