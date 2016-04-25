@@ -53,9 +53,12 @@ public class TS3Bot {
 
                 // final TS3ApiAsync  api = query.getAsyncApi();
                 //Api = api;
+                
+                 Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport"));
+                
                 api = query.getAsyncApi();
 
-                api.selectVirtualServerById(1);
+                api.selectVirtualServerByPort(voicePort);
 
                 api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
 
