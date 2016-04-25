@@ -33,7 +33,7 @@ public class ChatBridge extends JC2Plugin {
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
     public static Map<String, String> ircConfigMap = null;
-    private static final String version = "1.0.4.1";
+    private static final String version = "1.0.4.2";
 
     @Override
     public void start() {
