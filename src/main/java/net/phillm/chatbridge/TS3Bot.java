@@ -3,6 +3,7 @@ package net.phillm.chatbridge;
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.exception.TS3CommandFailedException;
 import java.util.Map;
 import java.util.ArrayList;
 import org.yaml.snakeyaml.Yaml;
@@ -59,7 +60,11 @@ public class TS3Bot {
                     Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport"));
                     api.selectVirtualServerByPort(voicePort);
                 } else {
-                    api.selectVirtualServer(api.getVirtualServers().get().get(1));
+                    try {
+                        api.selectVirtualServer(api.getVirtualServers().get().get(1));
+                    } catch (TS3CommandFailedException e) {
+                        api.selectVirtualServerById(1);
+                    }
                 }
 
                 api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
