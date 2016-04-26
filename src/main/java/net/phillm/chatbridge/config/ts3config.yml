@@ -1,5 +1,5 @@
 host: ""
-port: ""
+queryport: ""
 voiceport: ""
 username: ""
 password: ""
