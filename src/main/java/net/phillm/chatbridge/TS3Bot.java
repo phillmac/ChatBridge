@@ -39,7 +39,7 @@ public class TS3Bot {
             final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
             if (!ts3ConfigMap.get("host").equals("")) {
                 config.setHost(ts3ConfigMap.get("host"));
-                if (!ts3ConfigMap.get("host").equals("")) {
+                if (!ts3ConfigMap.get("queryport").equals("")) {
                     Integer portNo = Integer.parseInt(ts3ConfigMap.get("queryport"));
                     config.setQueryPort(portNo);
                     System.out.println("TS3  query port: " + portNo.toString());
