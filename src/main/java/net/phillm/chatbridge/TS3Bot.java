@@ -43,7 +43,7 @@ public class TS3Bot {
                     Integer portNo = Integer.parseInt(ts3ConfigMap.get("queryport"));
                     config.setQueryPort(portNo);
                     System.out.println("TS3  query port: " + portNo.toString());
-                    
+
                 } else {
                     config.setQueryPort(10011);
                 }
@@ -53,12 +53,14 @@ public class TS3Bot {
 
                 // final TS3ApiAsync  api = query.getAsyncApi();
                 //Api = api;
-                
-                 Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport"));
-                
                 api = query.getAsyncApi();
+                if (!ts3ConfigMap.get("queryport").equals("")) {
 
-                api.selectVirtualServerByPort(voicePort);
+                    Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport"));
+                    api.selectVirtualServerByPort(voicePort);
+                } else {
+                    api.selectVirtualServer(api.getVirtualServers().get().get(1));
+                }
 
                 api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
 
