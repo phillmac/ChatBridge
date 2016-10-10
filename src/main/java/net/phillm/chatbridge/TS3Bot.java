@@ -3,13 +3,18 @@ package net.phillm.chatbridge;
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.CommandFuture;
 import com.github.theholywaffle.teamspeak3.api.exception.TS3CommandFailedException;
+import com.github.theholywaffle.teamspeak3.api.wrapper.Channel;
 import java.util.Map;
 import java.util.ArrayList;
 import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import static net.phillm.chatbridge.ChatBridge.extractConfig;
+import org.apache.commons.lang3.StringUtils;
 
 public class TS3Bot {
 
@@ -43,7 +48,7 @@ public class TS3Bot {
                 if (!ts3ConfigMap.get("queryport").equals("")) {
                     Integer portNo = Integer.parseInt(ts3ConfigMap.get("queryport"));
                     config.setQueryPort(portNo);
-                    System.out.println("TS3  query port: " + portNo.toString());
+                    System.out.println("TS3 query port: " + portNo.toString());
 
                 } else {
                     config.setQueryPort(10011);
@@ -58,7 +63,11 @@ public class TS3Bot {
                 if (!ts3ConfigMap.get("voiceport").equals("")) {
 
                     Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport"));
-                    api.selectVirtualServerByPort(voicePort);
+                    try {
+                        api.selectVirtualServerByPort(voicePort);
+                    } catch (TS3CommandFailedException e) {
+                        api.selectVirtualServerById(1);
+                    }
                 } else {
                     try {
                         api.selectVirtualServer(api.getVirtualServers().get().get(1));
@@ -67,17 +76,54 @@ public class TS3Bot {
                     }
                 }
 
-                api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
+                CommandFuture<Boolean> login = api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
 
-                api.setNickname(ts3ConfigMap.get("nick"));
+                try {
+                    login.get(30, TimeUnit.SECONDS);
+                } catch (TimeoutException ex) {
+                    System.out.println("Timed out while trying to login");
+                }
 
-                api.moveClient(api.whoAmI().get().getId(), api.getChannelByNameExact(ts3ConfigMap.get("channel"), true).get().getId());
-                api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
+                if (login.isSuccessful()) {
 
-                api.registerAllEvents();
-                api.addTS3Listeners(new TS3ChatListener(this));
+                    api.setNickname(ts3ConfigMap.get("nick"));
+
+                    int ts3ChannelId = 0;
+                    String ts3CfgChnnlVal = ts3ConfigMap.get("channel");
+                    boolean ts3ChannelIdValid = false;
+
+                    if (ts3CfgChnnlVal.equals("")) {
+                        System.out.println("Channel setting blank, not switching channels");
+                    } else {
+                        if (StringUtils.isNumeric(ts3CfgChnnlVal)) {
+                            ts3ChannelId = Integer.parseInt(ts3CfgChnnlVal);
+                            ts3ChannelIdValid = true;
+                        } else {
+                            CommandFuture<Channel> channelNameSeach = api.getChannelByNameExact(ts3CfgChnnlVal, true);
+                            try {
+                                ts3ChannelId = channelNameSeach.get(30, TimeUnit.SECONDS).getId();
+                            } catch (TimeoutException ex) {
+                                System.out.println("Timed out while searcghing for channel name '" + ts3CfgChnnlVal + "'");
+                            }
+                            if (channelNameSeach.isSuccessful()) {
+                                ts3ChannelIdValid = true;
+                            } else {
+                                System.out.println("could not find channel name '" + ts3CfgChnnlVal + "'");
+                            }
+                        }
+                        if (ts3ChannelIdValid) {
+                            api.moveClient(api.whoAmI().get().getId(), ts3ChannelId);
+                        }
+
+                        api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
+                        api.registerAllEvents();
+                        api.addTS3Listeners(new TS3ChatListener(this));
+                    }
+                } else {
+                    System.out.println("Could not login, Check that the login details are set correctly in ts3config.yml");
+                }
             } else {
-                System.out.println("Check that the host  is set correctly in ts3config.yml");
+                System.out.println("Check that the host is set correctly in ts3config.yml");
             }
         }
     }
