@@ -16,11 +16,23 @@ public class TS3ChatListener implements TS3Listener {
 
     private final TS3Bot ts3;
     private final TS3ApiAsync ts3api;
+    private String messageSeparatorColor;
+    private String messageseparator;
+    private String messagecolor;
 
     public TS3ChatListener(TS3Bot TS3) {
 
         ts3 = TS3;
         ts3api = TS3.getAPI();
+
+        messageSeparatorColor = ChatBridge.ircConfigMap.get("messageseparatorcolor");
+        messageseparator = ChatBridge.ircConfigMap.get("messageseparator");
+        messagecolor = Colors.lookup(ChatBridge.ircConfigMap.get("messagecolor"));
+
+        if (!messageseparator.equals("")) {
+            messageseparator = ":";
+        }
+
     }
 
     @Override
@@ -66,16 +78,18 @@ public class TS3ChatListener implements TS3Listener {
                             ts3api.sendChannelMessage("IRC bot nick is " + ChatBridge.getIRCManger().getBots().first().getNick());
                             break;
                         default:
-
                             OutputChannel ircChannel = ChatBridge.getIRCManger().getBots().first().getUserChannelDao().getChannel(ChatBridge.ircConfigMap.get("channel")).send();
                             StringBuilder messageBuilder = new StringBuilder();
                             messageBuilder.append(senderName);
-                            messageBuilder.append(Colors.lookup(ChatBridge.ircConfigMap.get("messageseperatorcolor")));
-                            messageBuilder.append(ChatBridge.ircConfigMap.get("messageseperator"));
-                            messageBuilder.append(Colors.lookup(ChatBridge.ircConfigMap.get("messagecolor")));
+                            if (!messageSeparatorColor.equals("")) {
+                                messageBuilder.append(Colors.lookup(messageSeparatorColor));
+                            }
+                            messageBuilder.append(messageseparator);
+                            if (!messageSeparatorColor.equals("")) {
+                                messageBuilder.append(messagecolor);
+                            }
                             messageBuilder.append(ts3.stripTS3FormattingTags(e.getMessage()));
-                            
-                            
+
                             ircChannel.message(messageBuilder.toString());
                             //ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
 
