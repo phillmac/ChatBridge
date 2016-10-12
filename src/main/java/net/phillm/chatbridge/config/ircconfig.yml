@@ -20,7 +20,7 @@ autoreconnect: ""
 #   Default ":"
 #   E.g. messageseparator: ":"
 messageseparator: ""
-#Color the mesage seperator (optional)
+#Color the mesage separator (optional)
 #   Default ""
 #   E.g. messageseparatorcolor: "GREEN"
 messageseparatorcolor: ""
