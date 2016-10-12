@@ -20,14 +20,14 @@ public class TS3Bot {
 
     private TS3ApiAsync api = null;
     private Map<Integer, String> uidsInChannel = new HashMap();
-    public ArrayList<String> stripableTS3FormattingTags;
+    public ArrayList<String> stripableTS3BBcode;
 
     public TS3Bot() throws InterruptedException {
-        stripableTS3FormattingTags = new ArrayList();
-        stripableTS3FormattingTags.add("(\\[URL\\])");
-        stripableTS3FormattingTags.add("(\\[\\/URL\\])");
-        stripableTS3FormattingTags.add("(\\[url\\])");
-        stripableTS3FormattingTags.add("(\\[\\/url\\])");
+        stripableTS3BBcode = new ArrayList();
+        stripableTS3BBcode.add("(\\[URL\\])");
+        stripableTS3BBcode.add("(\\[\\/URL\\])");
+        stripableTS3BBcode.add("(\\[url\\])");
+        stripableTS3BBcode.add("(\\[\\/url\\])");
 
         final TS3Config config = new TS3Config();
         //config.setDebugLevel(Level.ALL);
@@ -129,10 +129,15 @@ public class TS3Bot {
     }
 
     public String stripTS3FormattingTags(String message) {
-        for (String tagtoStrip : stripableTS3FormattingTags) {
+        for (String tagtoStrip : stripableTS3BBcode) {
             message = message.replaceAll(tagtoStrip, "");
         }
         return message;
+    }
+    
+    public String remap_formating(Map formatRemapping, String Message) {
+     
+       return ""; //to be implemented 
     }
 
     public TS3ApiAsync getAPI() {
