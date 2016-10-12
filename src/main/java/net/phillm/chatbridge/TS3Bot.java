@@ -21,8 +21,8 @@ public class TS3Bot {
 
     private TS3ApiAsync api = null;
     private Map<Integer, String> uidsInChannel = new HashMap();
-    private ArrayList<String> stripableTS3BBcode;
-    private ArrayList<Pattern> stripableTS3BBcodePatterns;
+    private ArrayList<String> stripableTags;
+    private ArrayList<Pattern> stripableTagPatterns;
 
     public TS3Bot() throws InterruptedException {
         //stripableTS3BBcode = new ArrayList();
@@ -118,29 +118,31 @@ public class TS3Bot {
                             api.moveClient(api.whoAmI().get().getId(), ts3ChannelId);
                         }
                         if (ts3ConfigMap.containsKey("bbcodes_to_remove")) {
-                            System.out.println("Debug" + ts3ConfigMap.get("bbcodes_to_remove").getClass().getName());
-                        stripableTS3BBcode = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
+                            stripableTags = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
                         }
-                        if (stripableTS3BBcode != null) {
-                        stripableTS3BBcode.stream().forEach((String tagPatern) -> {
-                            stripableTS3BBcodePatterns.add(Pattern.compile("\\[" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
-                            stripableTS3BBcodePatterns.add(Pattern.compile("\\[\\/" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
-                        });
-                        }
+                        if (stripableTags != null) {
+                            for (String tagPatern : stripableTags)
+                                {
+                                    stripableTagPatterns.add(Pattern.compile("\\[" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
+                                    stripableTagPatterns.add(Pattern.compile("\\[\\/" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
+                                }
+                            }
 
-                        api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
-                        api.registerAllEvents();
-                        api.addTS3Listeners(new TS3ChatListener(this));
-                    }
-                } else {
+                            api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
+                            api.registerAllEvents();
+                            api.addTS3Listeners(new TS3ChatListener(this));
+                        }
+                    }else {
                     System.out.println("Could not login, Check that the login details are set correctly in ts3config.yml");
+                }
                 }
             }
         }
-    }
+
+    
 
     public String stripBBCode(String message) {
-        for (Pattern patterntoStrip : stripableTS3BBcodePatterns) {
+        for (Pattern patterntoStrip : stripableTagPatterns) {
             message = patterntoStrip.matcher(message).replaceAll("");
         }
         return message;
