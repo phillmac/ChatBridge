@@ -124,8 +124,8 @@ public class TS3Bot {
                             stripableTagPatterns = new ArrayList();
                             for (String tagPatern : stripableTags)
                                 {
-                                    stripableTagPatterns.add(Pattern.compile("\\[" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
-                                    stripableTagPatterns.add(Pattern.compile("\\[\\/" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
+                                    stripableTagPatterns.add(Pattern.compile("\\[" + tagPatern + ".*?\\]", Pattern.CASE_INSENSITIVE));
+                                    stripableTagPatterns.add(Pattern.compile("\\[\\/" + tagPatern + "\\]", Pattern.CASE_INSENSITIVE));
                                 }
                             }
 
