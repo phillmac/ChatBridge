@@ -143,6 +143,7 @@
                 <includes>
                     <include>ircconfig.yml</include>
                     <include>ts3config.yml</include>
+                    <include>remap_formating.yml</include>
                 </includes>
             </resource>
         </resources>
