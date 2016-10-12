@@ -121,6 +121,7 @@ public class TS3Bot {
                             stripableTags = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
                         }
                         if (stripableTags != null) {
+                            stripableTagPatterns = new ArrayList();
                             for (String tagPatern : stripableTags)
                                 {
                                     stripableTagPatterns.add(Pattern.compile("\\[" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
