@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import static net.phillm.chatbridge.ChatBridge.extractConfig;
 import org.apache.commons.lang3.StringUtils;
@@ -135,14 +134,14 @@ public class TS3Bot {
         }
     }
 
-    public String stripTS3FormattingTags(String message) {
+    public String stripBBCode(String message) {
         for (Pattern patterntoStrip : stripableTS3BBcodePatterns) {
             message = patterntoStrip.matcher(message).replaceAll("");
         }
         return message;
     }
 
-    public String remap_formating(Map formatRemapping, String Message) {
+    public String remapFormating(Map formatRemapping, String Message) {
 
         return Message; //to be implemented 
     }

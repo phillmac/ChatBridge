@@ -88,10 +88,10 @@ public class TS3ChatListener implements TS3Listener {
                             if (!messageSeparatorColor.equals("")) {
                                 messageBuilder.append(messagecolor);
                             }
-                            messageBuilder.append(ts3.stripTS3FormattingTags(e.getMessage()));
+                            messageBuilder.append(ts3.stripBBCode(e.getMessage()));
 
                             ircChannel.message(messageBuilder.toString());
-                            //ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripTS3FormattingTags(e.getMessage())});
+                            //ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", "TS3: " + senderName + ": " + ts3.stripBBCode(e.getMessage())});
 
                             break;
                     }
