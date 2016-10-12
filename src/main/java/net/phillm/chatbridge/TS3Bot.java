@@ -21,8 +21,8 @@ public class TS3Bot {
 
     private TS3ApiAsync api = null;
     private Map<Integer, String> uidsInChannel = new HashMap();
-    public ArrayList<String> stripableTS3BBcode;
-    public ArrayList<Pattern> stripableTS3BBcodePatterns;
+    private ArrayList<String> stripableTS3BBcode;
+    private ArrayList<Pattern> stripableTS3BBcodePatterns;
 
     public TS3Bot() throws InterruptedException {
         //stripableTS3BBcode = new ArrayList();
