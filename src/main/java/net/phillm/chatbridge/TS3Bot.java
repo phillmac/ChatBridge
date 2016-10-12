@@ -137,7 +137,7 @@ public class TS3Bot {
     
     public String remap_formating(Map formatRemapping, String Message) {
      
-       return ""; //to be implemented 
+       return Message; //to be implemented 
     }
 
     public TS3ApiAsync getAPI() {
