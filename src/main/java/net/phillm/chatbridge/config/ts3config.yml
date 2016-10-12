@@ -1,10 +1,30 @@
+#TS3 server address
+#   E.g. host: "example.com"
+#   E.g. host: "localhost"
+#   E.g. host: "127.0.0.1"
 host: ""
+#TS3 query port
+#   Default 10011
+#   E.g. 10011
 queryport: ""
+#TS3 voice port for selecting virtual server
+#   Default 9987
+#   E.g voiceport: "9987"
 voiceport: ""
+#Query username
+#   E.g. username: "example"
 username: ""
+#Query password
+#   E.g. password: "example"
 password: ""
+#Bot nickname
+#   E.g. nick: "IRCBot"
 nick: ""
+#Full text of channel name or channel id to switch to after conecting (optional)
+#   E.g. channel: "Default" or channel: "0"
 channel: ""
+#BBCode tags to remove from chat.
+#Add or remove tags from the list to suit your needs
 bbcodes_to_remove:
     - "size"
     - "font"
