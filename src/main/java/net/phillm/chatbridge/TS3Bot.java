@@ -13,6 +13,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import static net.phillm.chatbridge.ChatBridge.extractConfig;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,13 +23,14 @@ public class TS3Bot {
     private TS3ApiAsync api = null;
     private Map<Integer, String> uidsInChannel = new HashMap();
     public ArrayList<String> stripableTS3BBcode;
+    public ArrayList<Pattern> stripableTS3BBcodePatterns;
 
     public TS3Bot() throws InterruptedException {
-        stripableTS3BBcode = new ArrayList();
-        stripableTS3BBcode.add("(\\[URL\\])");
-        stripableTS3BBcode.add("(\\[\\/URL\\])");
-        stripableTS3BBcode.add("(\\[url\\])");
-        stripableTS3BBcode.add("(\\[\\/url\\])");
+        //stripableTS3BBcode = new ArrayList();
+        //stripableTS3BBcode.add("(\\[URL\\])");
+        //stripableTS3BBcode.add("(\\[\\/URL\\])");
+        //stripableTS3BBcode.add("(\\[url\\])");
+        //stripableTS3BBcode.add("(\\[\\/url\\])");
 
         final TS3Config config = new TS3Config();
         //config.setDebugLevel(Level.ALL);
@@ -42,16 +45,18 @@ public class TS3Bot {
 
         Yaml ts3ConfigParser = new Yaml();
         if (ts3ConfigInput != null) {
-            final Map<String, String> ts3ConfigMap = (Map<String, String>) ts3ConfigParser.load(ts3ConfigInput);
-            if (!ts3ConfigMap.get("host").equals("")) {
-                config.setHost(ts3ConfigMap.get("host"));
-                if (!ts3ConfigMap.get("queryport").equals("")) {
-                    Integer portNo = Integer.parseInt(ts3ConfigMap.get("queryport"));
+            final Map<String, Object> ts3ConfigMap = (Map<String, Object>) ts3ConfigParser.load(ts3ConfigInput);
+            if (ts3ConfigMap.get("host").equals("")) {
+                System.out.println("Check that the host is set correctly in ts3config.yml");
+            } else {
+                config.setHost(ts3ConfigMap.get("host").toString());
+                if (ts3ConfigMap.get("queryport").equals("")) {
+                    config.setQueryPort(10011);
+                } else {
+                    Integer portNo = Integer.parseInt(ts3ConfigMap.get("queryport").toString());
                     config.setQueryPort(portNo);
                     System.out.println("TS3 query port: " + portNo.toString());
 
-                } else {
-                    config.setQueryPort(10011);
                 }
 
                 final TS3Query query = new TS3Query(config);
@@ -60,23 +65,22 @@ public class TS3Bot {
                 // final TS3ApiAsync  api = query.getAsyncApi();
                 //Api = api;
                 api = query.getAsyncApi();
-                if (!ts3ConfigMap.get("voiceport").equals("")) {
-
-                    Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport"));
-                    try {
-                        api.selectVirtualServerByPort(voicePort);
-                    } catch (TS3CommandFailedException e) {
-                        api.selectVirtualServerById(1);
-                    }
-                } else {
+                if (ts3ConfigMap.get("voiceport").equals("")) {
                     try {
                         api.selectVirtualServer(api.getVirtualServers().get().get(1));
                     } catch (TS3CommandFailedException e) {
                         api.selectVirtualServerById(1);
                     }
+                } else {
+                    Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport").toString());
+                    try {
+                        api.selectVirtualServerByPort(voicePort);
+                    } catch (TS3CommandFailedException e) {
+                        api.selectVirtualServerById(1);
+                    }
                 }
 
-                CommandFuture<Boolean> login = api.login(ts3ConfigMap.get("username"), ts3ConfigMap.get("password"));
+                CommandFuture<Boolean> login = api.login(ts3ConfigMap.get("username").toString(), ts3ConfigMap.get("password").toString());
 
                 try {
                     login.get(30, TimeUnit.SECONDS);
@@ -86,10 +90,10 @@ public class TS3Bot {
 
                 if (login.isSuccessful()) {
 
-                    api.setNickname(ts3ConfigMap.get("nick"));
+                    api.setNickname(ts3ConfigMap.get("nick").toString());
 
                     int ts3ChannelId = 0;
-                    String ts3CfgChnnlVal = ts3ConfigMap.get("channel");
+                    String ts3CfgChnnlVal = ts3ConfigMap.get("channel").toString();
                     boolean ts3ChannelIdValid = false;
 
                     if (ts3CfgChnnlVal.equals("")) {
@@ -114,6 +118,11 @@ public class TS3Bot {
                         if (ts3ChannelIdValid) {
                             api.moveClient(api.whoAmI().get().getId(), ts3ChannelId);
                         }
+                        stripableTS3BBcode = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
+                        stripableTS3BBcode.stream().forEach((String tagPatern) -> {
+                            stripableTS3BBcodePatterns.add(Pattern.compile("\\[" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
+                            stripableTS3BBcodePatterns.add(Pattern.compile("\\[\\/" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
+                        });
 
                         api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
                         api.registerAllEvents();
@@ -122,22 +131,20 @@ public class TS3Bot {
                 } else {
                     System.out.println("Could not login, Check that the login details are set correctly in ts3config.yml");
                 }
-            } else {
-                System.out.println("Check that the host is set correctly in ts3config.yml");
             }
         }
     }
 
     public String stripTS3FormattingTags(String message) {
-        for (String tagtoStrip : stripableTS3BBcode) {
-            message = message.replaceAll(tagtoStrip, "");
+        for (Pattern patterntoStrip : stripableTS3BBcodePatterns) {
+            message = patterntoStrip.matcher(message).replaceAll("");
         }
         return message;
     }
-    
+
     public String remap_formating(Map formatRemapping, String Message) {
-     
-       return Message; //to be implemented 
+
+        return Message; //to be implemented 
     }
 
     public TS3ApiAsync getAPI() {
