@@ -117,11 +117,16 @@ public class TS3Bot {
                         if (ts3ChannelIdValid) {
                             api.moveClient(api.whoAmI().get().getId(), ts3ChannelId);
                         }
+                        if (ts3ConfigMap.containsKey("bbcodes_to_remove")) {
+                            System.out.println("Debug" + ts3ConfigMap.get("bbcodes_to_remove").getClass().getName());
                         stripableTS3BBcode = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
+                        }
+                        if (stripableTS3BBcode != null) {
                         stripableTS3BBcode.stream().forEach((String tagPatern) -> {
                             stripableTS3BBcodePatterns.add(Pattern.compile("\\[" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
                             stripableTS3BBcodePatterns.add(Pattern.compile("\\[\\/" + tagPatern + ".*\\]", Pattern.CASE_INSENSITIVE));
                         });
+                        }
 
                         api.sendChannelMessage(api.whoAmI().get().getNickname() + " is active");
                         api.registerAllEvents();
