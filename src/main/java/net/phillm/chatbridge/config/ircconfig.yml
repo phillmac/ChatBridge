@@ -1,8 +1,52 @@
+#IRC server address
+#   E.g. host: "example.com"
+#   E.g. host: "localhost"
+#   E.g. host: "127.0.0.1"
 host: ""
+#IRC Server port
+#   E.g. port: "6667"
 port: ""
+#IRC channel to join
+#   E.g. channel: "#example"
 channel: ""
+#Bot nickname 
+#   E.g. nick: "TS3Bot"
 nick: ""
+#Reconect to irc server automaticaly after connection drops
+#   Default "false"
+#   E.g. autoreconnect: "true"
 autoreconnect: ""
+#Seperator to insert between username and message
+#   Default ":"
+#   E.g. messageseparator: ":"
 messageseparator: ""
+#Color the mesage seperator (optional)
+#   Default ""
+#   E.g. messageseparatorcolor: "GREEN"
 messageseparatorcolor: ""
+#Color the mesage text
+#   Default ""
+#   E.g. messagecolor: "RED"
 messagecolor: ""
+#Posible color/format values:
+#   "WHITE"
+#   "BLACK"
+#   "DARK_BLUE"
+#   "DARK_GREEN"
+#   "RED"
+#   "BROWN"
+#   "PURPLE"
+#   "OLIVE"
+#   "YELLOW"
+#   "GREEN"
+#   "TEAL"
+#   "CYAN"
+#   "BLUE"
+#   "MAGENTA"
+#   "DARK_GRAY"
+#   "LIGHT_GRAY"
+#   "NORMAL"
+#   "BOLD"
+#   "UNDERLINE"
+#   "REVERSE"
+#   "ITALICS" 
