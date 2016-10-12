@@ -15,7 +15,7 @@ nick: ""
 #Reconect to irc server automaticaly after connection drops
 #   Default "false"
 #   E.g. autoreconnect: "true"
-autoreconnect: ""
+autoreconnect: "false"
 #Seperator to insert between username and message
 #   Default ":"
 #   E.g. messageseparator: ":"
