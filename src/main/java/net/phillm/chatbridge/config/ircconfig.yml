@@ -24,7 +24,7 @@ messageseparator: ""
 #   Default ""
 #   E.g. messageseparatorcolor: "GREEN"
 messageseparatorcolor: ""
-#Color the mesage text
+#Color the mesage text (otional)
 #   Default ""
 #   E.g. messagecolor: "RED"
 messagecolor: ""
