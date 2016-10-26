@@ -14,8 +14,10 @@ public class IRCListener extends ListenerAdapter {
     @Override
     public void onGenericMessage(GenericMessageEvent event) {
         System.out.println("IRC onGenericMessage fired");
-        
+
         ArrayList<String> msgContents = new ArrayList(Arrays.asList(event.getMessage().split(" ")));
+        TS3Bot ts3Bot = ChatBridge.getTS3();
+        TS3ApiAsync ts3API = ts3Bot.getAPI();
 
         switch (msgContents.get(0)) {
             case ".ping":
@@ -25,22 +27,26 @@ public class IRCListener extends ListenerAdapter {
                 ChatBridge.connectTS3();
                 break;
             case ".ts3isconnected":
-                try {
-                    if (ChatBridge.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
-                        event.respond(" Connected!");
-                    } else {
+                if (ts3API != null) {
+                    try {
+                        if (ChatBridge.getTS3().getAPI().getConnectionInfo().getUninterruptibly(5000, TimeUnit.SECONDS).getPing() < 2000) {
+                            event.respond(" Connected!");
+                        } else {
+                            event.respond(" Not Connected!");
+                        }
+                    } catch (TimeoutException ex) {
                         event.respond(" Not Connected!");
                     }
-                } catch (TimeoutException ex) {
-                    event.respond(" Not Connected!");
+                } else {
+                    event.respond("Bot not connected, reports: " + ts3Bot.getConnectErrorMessage());
                 }
-            break;
+
+                break;
 
             default:
                 String nickname = event.getUser().getNick();
                 String message = removeFormattingAndColors(event.getMessage());
 
-                TS3Bot ts3Bot = ChatBridge.getTS3();
                 if (ts3Bot != null) {
                     TS3ApiAsync api = ts3Bot.getAPI();
                     if (api != null) {
@@ -54,13 +60,13 @@ public class IRCListener extends ListenerAdapter {
                 if (nickname.equalsIgnoreCase("skype")) {
                     System.out.println("nick " + nickname + " is skype. not sending msg");
                 } //else {
-                    //String sendToSkypeResult = ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
-                    //System.out.println("Got restult: " + sendToSkypeResult);
-                    //if (sendToSkypeResult.equalsIgnoreCase("OK")) {
-                        //System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ": " + message + "'");
-                    //} else {
-                        //System.out.println("Failed to send to skype: ./skype-msg.sh " + "'" + nickname + ": " + message + "'");
-                    //}
+                //String sendToSkypeResult = ChatBridge.executeShellCommand(new String[]{"./skype-msg.sh", nickname + ": " + message}).trim();
+                //System.out.println("Got restult: " + sendToSkypeResult);
+                //if (sendToSkypeResult.equalsIgnoreCase("OK")) {
+                //System.out.println("sent to skype: ./skype-msg.sh " + "'" + nickname + ": " + message + "'");
+                //} else {
+                //System.out.println("Failed to send to skype: ./skype-msg.sh " + "'" + nickname + ": " + message + "'");
+                //}
                 //}
                 break;
         }
