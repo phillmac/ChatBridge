@@ -79,7 +79,8 @@ public class TS3Bot {
                             System.out.println(ConnectErrorMessage);
                             successfulySelectedVirtServ = false;
                         }
-                        if (selectVirtualServerById.isFailed()) {
+                        selectVirtualServerById
+                        if (selectVirtualServerById.hasFailed()) {
                             ConnectErrorMessage = "Failed to select virtual server";
                             System.out.println(ConnectErrorMessage);
                             successfulySelectedVirtServ = false;
@@ -98,7 +99,7 @@ public class TS3Bot {
                             System.out.println(ConnectErrorMessage);
                             successfulySelectedVirtServ = false;
                         }
-                        if (selectVirtualServerById.isFailed()) {
+                        if (selectVirtualServerById.hasFailed()) {
                             ConnectErrorMessage = "Failed to select virtual server";
                             System.out.println(ConnectErrorMessage);
                             successfulySelectedVirtServ = false;
