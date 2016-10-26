@@ -23,6 +23,7 @@ public class TS3Bot {
     private Map<Integer, String> uidsInChannel = new HashMap();
     private ArrayList<String> stripableTags;
     private ArrayList<Pattern> stripableTagPatterns;
+    private String ConnectErrorMessage = "";
 
     public TS3Bot() throws InterruptedException {
         //stripableTS3BBcode = new ArrayList();
@@ -46,7 +47,8 @@ public class TS3Bot {
         if (ts3ConfigInput != null) {
             final Map<String, Object> ts3ConfigMap = (Map<String, Object>) ts3ConfigParser.load(ts3ConfigInput);
             if (ts3ConfigMap.get("host").equals("")) {
-                System.out.println("Check that the host is set correctly in ts3config.yml");
+                ConnectErrorMessage = "Check that the host is set correctly in ts3config.yml";
+                System.out.println(ConnectErrorMessage);
             } else {
                 config.setHost(ts3ConfigMap.get("host").toString());
                 if (ts3ConfigMap.get("queryport").equals("")) {
@@ -64,66 +66,90 @@ public class TS3Bot {
                 // final TS3ApiAsync  api = query.getAsyncApi();
                 //Api = api;
                 api = query.getAsyncApi();
+                Boolean successfulySelectedVirtServ = true;
                 if (ts3ConfigMap.get("voiceport").equals("")) {
                     try {
                         api.selectVirtualServer(api.getVirtualServers().get().get(1));
                     } catch (TS3CommandFailedException e) {
-                        api.selectVirtualServerById(1);
+                        CommandFuture<Boolean> selectVirtualServerById = api.selectVirtualServerById(1);
+                        try {
+                            selectVirtualServerById.get(30, TimeUnit.SECONDS);
+                        } catch (TimeoutException ex) {
+                            ConnectErrorMessage = "Timed out whilst selecting virtual server";
+                            System.out.println(ConnectErrorMessage);
+                            successfulySelectedVirtServ = false;
+                        }
+                        if (selectVirtualServerById.isFailed()) {
+                            ConnectErrorMessage = "Failed to select virtual server";
+                            System.out.println(ConnectErrorMessage);
+                            successfulySelectedVirtServ = false;
+                        }
                     }
                 } else {
                     Integer voicePort = Integer.parseInt(ts3ConfigMap.get("voiceport").toString());
                     try {
                         api.selectVirtualServerByPort(voicePort);
                     } catch (TS3CommandFailedException e) {
-                        api.selectVirtualServerById(1);
+                        CommandFuture<Boolean> selectVirtualServerById = api.selectVirtualServerById(1);
+                        try {
+                            selectVirtualServerById.get(30, TimeUnit.SECONDS);
+                        } catch (TimeoutException ex) {
+                            ConnectErrorMessage = "Timed out whilst selecting virtual server";
+                            System.out.println(ConnectErrorMessage);
+                            successfulySelectedVirtServ = false;
+                        }
+                        if (selectVirtualServerById.isFailed()) {
+                            ConnectErrorMessage = "Failed to select virtual server";
+                            System.out.println(ConnectErrorMessage);
+                            successfulySelectedVirtServ = false;
+                        }
                     }
                 }
+                if (successfulySelectedVirtServ) {
+                    CommandFuture<Boolean> login = api.login(ts3ConfigMap.get("username").toString(), ts3ConfigMap.get("password").toString());
 
-                CommandFuture<Boolean> login = api.login(ts3ConfigMap.get("username").toString(), ts3ConfigMap.get("password").toString());
+                    try {
+                        login.get(30, TimeUnit.SECONDS);
+                    } catch (TimeoutException ex) {
+                        System.out.println("Timed out while trying to login");
+                    }
 
-                try {
-                    login.get(30, TimeUnit.SECONDS);
-                } catch (TimeoutException ex) {
-                    System.out.println("Timed out while trying to login");
-                }
+                    if (login.isSuccessful()) {
 
-                if (login.isSuccessful()) {
+                        api.setNickname(ts3ConfigMap.get("nick").toString());
 
-                    api.setNickname(ts3ConfigMap.get("nick").toString());
+                        int ts3ChannelId = 0;
+                        String ts3CfgChnnlVal = ts3ConfigMap.get("channel").toString();
+                        boolean ts3ChannelIdValid = false;
 
-                    int ts3ChannelId = 0;
-                    String ts3CfgChnnlVal = ts3ConfigMap.get("channel").toString();
-                    boolean ts3ChannelIdValid = false;
-
-                    if (ts3CfgChnnlVal.equals("")) {
-                        System.out.println("Channel setting blank, not switching channels");
-                    } else {
-                        if (StringUtils.isNumeric(ts3CfgChnnlVal)) {
-                            ts3ChannelId = Integer.parseInt(ts3CfgChnnlVal);
-                            ts3ChannelIdValid = true;
+                        if (ts3CfgChnnlVal.equals("")) {
+                            System.out.println("Channel setting blank, not switching channels");
                         } else {
-                            CommandFuture<Channel> channelNameSeach = api.getChannelByNameExact(ts3CfgChnnlVal, true);
-                            try {
-                                ts3ChannelId = channelNameSeach.get(30, TimeUnit.SECONDS).getId();
-                            } catch (TimeoutException ex) {
-                                System.out.println("Timed out while searcghing for channel name '" + ts3CfgChnnlVal + "'");
-                            }
-                            if (channelNameSeach.isSuccessful()) {
+                            if (StringUtils.isNumeric(ts3CfgChnnlVal)) {
+                                ts3ChannelId = Integer.parseInt(ts3CfgChnnlVal);
                                 ts3ChannelIdValid = true;
                             } else {
-                                System.out.println("could not find channel name '" + ts3CfgChnnlVal + "'");
+                                CommandFuture<Channel> channelNameSeach = api.getChannelByNameExact(ts3CfgChnnlVal, true);
+                                try {
+                                    ts3ChannelId = channelNameSeach.get(30, TimeUnit.SECONDS).getId();
+                                } catch (TimeoutException ex) {
+                                    System.out.println("Timed out while searcghing for channel name '" + ts3CfgChnnlVal + "'");
+                                }
+                                if (channelNameSeach.isSuccessful()) {
+                                    ts3ChannelIdValid = true;
+                                } else {
+                                    System.out.println("could not find channel name '" + ts3CfgChnnlVal + "'");
+                                }
                             }
-                        }
-                        if (ts3ChannelIdValid) {
-                            api.moveClient(api.whoAmI().get().getId(), ts3ChannelId);
-                        }
-                        if (ts3ConfigMap.containsKey("bbcodes_to_remove")) {
-                            stripableTags = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
-                        }
-                        if (stripableTags != null) {
-                            stripableTagPatterns = new ArrayList();
-                            for (String tagPatern : stripableTags)
-                                {
+                            if (ts3ChannelIdValid) {
+                                api.moveClient(api.whoAmI().get().getId(), ts3ChannelId);
+                            }
+                            if (ts3ConfigMap.containsKey("bbcodes_to_remove")) {
+                                stripableTags = (ArrayList) ts3ConfigMap.get("bbcodes_to_remove");
+                            }
+                            if (stripableTags != null) {
+                                stripableTagPatterns = new ArrayList();
+                                for (String tagPatern : stripableTags) {
                                     stripableTagPatterns.add(Pattern.compile("\\[" + tagPatern + ".*?\\]", Pattern.CASE_INSENSITIVE));
                                     stripableTagPatterns.add(Pattern.compile("\\[\\/" + tagPatern + "\\]", Pattern.CASE_INSENSITIVE));
                                 }
@@ -133,14 +159,17 @@ public class TS3Bot {
                             api.registerAllEvents();
                             api.addTS3Listeners(new TS3ChatListener(this));
                         }
-                    }else {
-                    System.out.println("Could not login, Check that the login details are set correctly in ts3config.yml");
-                }
+                    } else {
+                        ConnectErrorMessage = "Could not login, Check that the login details are set correctly in ts3config.yml";
+                        System.out.println(ConnectErrorMessage);
+                    }
                 }
             }
+        } else {
+            ConnectErrorMessage = "Error: Failed to get valid config object";
+            System.out.println(ConnectErrorMessage);
         }
-
-    
+    }
 
     public String stripBBCode(String message) {
         for (Pattern patterntoStrip : stripableTagPatterns) {
@@ -182,6 +211,10 @@ public class TS3Bot {
 
     public Map<Integer, String> getuidsInChannel() {
         return uidsInChannel;
+    }
+
+    public String getConnectErrorMessage() {
+        return ConnectErrorMessage;
     }
 
     public void setuidsInChannel(Map<Integer, String> Uids) {
