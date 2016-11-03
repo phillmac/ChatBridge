@@ -33,11 +33,11 @@ public class ChatBridge extends JC2Plugin {
     private static TS3Bot ts3;
     private static MultiBotManager ircbotmanager;
     public static Map<String, String> ircConfigMap = null;
-    private static final String version = "1.0.5.5";
+    private static final String VERSION = "1.0.5.5";
 
     @Override
     public void start() {
-        System.out.println("Chatbridge version " + version + " initalizing");
+        System.out.println("Chatbridge version " + VERSION + " initalizing");
 
         connectIRC();
         connectTS3();
@@ -100,7 +100,7 @@ public class ChatBridge extends JC2Plugin {
     public static void connectTS3() {
         try {
             ts3 = new TS3Bot();
-        } catch (Exception ex) {
+        } catch (InterruptedException ex) {
             Logger.getLogger(ChatBridge.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -204,7 +204,12 @@ public class ChatBridge extends JC2Plugin {
 
     @Override
     public String getVersion() {
-        return version;
+        return VERSION;
+    }
+
+    @Override
+    public boolean extractConfig() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
